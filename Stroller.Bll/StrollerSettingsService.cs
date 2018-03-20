@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Stroller.Contracts.Dto;
 using Stroller.Contracts.Interfaces;
 
@@ -13,6 +9,16 @@ namespace Stroller.Bll
         public Task<StrollerSettings> GetSettings()
         {
             return ExecuteGetService<StrollerSettings>("config");
+        }
+
+        public Task<NameValuePair<string>[]> GetDirections()
+        {
+            return ExecuteGetService<NameValuePair<string>[]>("directions");
+        }
+
+        public void SaveSettings(StrollerSettings settings)
+        {
+            ExecutePostService(settings, "config");
         }
     }
 }

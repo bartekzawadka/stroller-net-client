@@ -9,7 +9,7 @@ namespace Stroller.ViewModels
 {
     public class ConnectionSettingsViewModel : DetailsScreen<ConnectionSettingsInfo>
     {
-        public ConnectionSettingsViewModel()
+        public ConnectionSettingsViewModel() : base(IoC.Get<IMain>() as ScreenBase)
         {
             Load();
         }

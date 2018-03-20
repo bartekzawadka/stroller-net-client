@@ -50,7 +50,13 @@
                            DisplayMode="CompactInline" 
                            ItemsSource="{Binding MenuItems}"
                            SelectedItem="{Binding SelectedMenuItem, Mode=TwoWay}"
-                           SelectedIndex="0">
+                           SelectedIndex="0"
+                           IsPaneOpen="True">
+            <mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
+                <DataTemplate>
+                    <Label Content="MENU" VerticalAlignment="Center" Foreground="{StaticResource WhiteColorBrush}" FontSize="16"></Label>
+                </DataTemplate>
+            </mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
             <mah:HamburgerMenu.Content>
                 <ContentControl cal:View.Model="{Binding CurrentContent, Mode=TwoWay}"></ContentControl>
             </mah:HamburgerMenu.Content>

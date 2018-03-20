@@ -106,10 +106,8 @@
     <Compile Include="ViewModels\Common\ScreenBase.cs" />
     <Compile Include="ViewModels\ConnectionSettingsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\StrollerSettingsViewModel.cs" />
     <Compile Include="Views\Controls\NButton.xaml.cs" />
-    <Compile Include="Views\StrollerSettings.xaml.cs">
-      <DependentUpon>StrollerSettings.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main\AppBootstrapper.cs" />

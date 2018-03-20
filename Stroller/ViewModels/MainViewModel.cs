@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using Caliburn.Micro;
+﻿using System;
+using System.Linq;
 using MahApps.Metro.Controls;
 using MahApps.Metro.IconPacks;
-using Stroller.Contracts.Interfaces;
 using Stroller.Main;
 using Stroller.ViewModels.Common;
 
@@ -14,8 +13,6 @@ namespace Stroller.ViewModels
         private HamburgerMenuIconItem _selectedMenuItem;
         private ScreenBase _currentContent;
         private ScreenBase _lastView;
-
-        private ISettingsService _settingsService;
 
         public ScreenBase CurrentContent
         {
@@ -63,7 +60,7 @@ namespace Stroller.ViewModels
             }
         }
 
-        public MainViewModel()
+        public MainViewModel() : base(null)
         {
             MenuItems = new HamburgerMenuItemCollection
             {
@@ -71,10 +68,7 @@ namespace Stroller.ViewModels
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.Camera},
                     Label = "Capturing",
-                    Tag = new CapturingViewModel
-                    {
-                        ParentScreen = this
-                    }
+                    Tag = typeof(CapturingViewModel)
                 },
                 new HamburgerMenuIconItem
                 {
@@ -85,19 +79,13 @@ namespace Stroller.ViewModels
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.Settings},
                     Label = "Capturing settings",
-                    Tag = new CapturingSettingsViewModel
-                    {
-                        ParentScreen = this
-                    }
+                    Tag = typeof(CapturingSettingsViewModel)
                 },
                 new HamburgerMenuIconItem
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.Connect},
                     Label = "Connection settings",
-                    Tag = new ConnectionSettingsViewModel
-                    {
-                        ParentScreen = this
-                    }
+                    Tag = typeof(ConnectionSettingsViewModel)
                 },
             };
 
@@ -106,21 +94,8 @@ namespace Stroller.ViewModels
 
         public void UpdateView()
         {
-            CurrentContent = SelectedMenuItem.Tag as ScreenBase;
-        }
-
-        public void StartCapturing()
-        {
-
-        }
-
-        public void BrowseImages()
-        {
-        }
-
-        public void ShowSettings()
-        {
-
+            if (SelectedMenuItem != null)
+                CurrentContent = Activator.CreateInstance((Type) SelectedMenuItem.Tag) as ScreenBase;
         }
 
         public void GoBack()
@@ -128,15 +103,13 @@ namespace Stroller.ViewModels
             if (LastView != null)
             {
                 SelectedMenuItem =
-                    MenuItems.FirstOrDefault(x => x.Tag != null && x.Tag.GetType() == LastView.GetType()) as
+                    MenuItems.FirstOrDefault(x => x.Tag != null && (Type)x.Tag == LastView.GetType()) as
                         HamburgerMenuIconItem;
             }
             else
             {
                 SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
             }
-
-            BrowseImages();
         }
     }
 }

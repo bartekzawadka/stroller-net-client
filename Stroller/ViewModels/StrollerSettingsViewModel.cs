@@ -4,9 +4,9 @@ using Stroller.ViewModels.Common;
 
 namespace Stroller.ViewModels
 {
-    public class CapturingViewModel: ScreenBase
+    public class StrollerSettingsViewModel : ScreenBase
     {
-        public CapturingViewModel() : base(IoC.Get<IMain>() as ScreenBase)
+        public StrollerSettingsViewModel() : base(IoC.Get<IMain>() as ScreenBase)
         {
         }
     }

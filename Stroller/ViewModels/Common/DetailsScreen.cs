@@ -1,6 +1,6 @@
 ﻿namespace Stroller.ViewModels.Common
 {
-    public class DetailsScreen<T>:ScreenBase
+    public class DetailsScreen<T> : ScreenBase
     {
         private T _context;
 
@@ -13,6 +13,10 @@
                 _context = value;
                 NotifyOfPropertyChange();
             }
+        }
+
+        public DetailsScreen(ScreenBase parentScreen) : base(parentScreen)
+        {
         }
     }
 }

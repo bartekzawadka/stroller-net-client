@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Stroller.Contracts.Dto
+﻿namespace Stroller.Contracts.Dto
 {
     public class StrollerSettings
     {
@@ -8,10 +6,10 @@ namespace Stroller.Contracts.Dto
 
         public decimal StepAngle { get; set; }
 
-        //public KeyValuePair<string, string>[] Directions { get; set; }
-
         public string[] Cameras { get; set; }
 
         public string Camera { get; set; }
+
+        public NameValuePair<string>[] Directions { get; set; }
     }
 }

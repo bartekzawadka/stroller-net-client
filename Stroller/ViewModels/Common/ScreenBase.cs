@@ -13,6 +13,11 @@ namespace Stroller.ViewModels.Common
 
         public ScreenBase ParentScreen { get; set; }
 
+        protected ScreenBase(ScreenBase parentScreen)
+        {
+            ParentScreen = parentScreen;
+        }
+
         public override void TryClose(bool? dialogResult = null)
         {
             base.TryClose(dialogResult);
