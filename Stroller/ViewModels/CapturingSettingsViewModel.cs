@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Caliburn.Micro;
+using Stroller.Camera;
 using Stroller.Contracts.Dto;
 using Stroller.Contracts.Interfaces;
 using Stroller.Main;
@@ -35,6 +36,10 @@ namespace Stroller.ViewModels
 
         public async void LoadSettings()
         {
+            var cameras = CameraManager.GetCameras();
+            CameraManager.SetCurrentCamera(cameras.First());
+            var buff = CameraManager.Capture();
+
             var progress = await ShowProgress("Loading settings", "Reading settings from Stroller. Please wait...",
                 true);
             progress.SetIndeterminate();

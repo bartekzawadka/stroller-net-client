@@ -206,6 +206,10 @@
       <Project>{b7893976-55a2-4964-a63b-bcdfe3f259b2}</Project>
       <Name>Stroller.Bll</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Stroller.Camera\Stroller.Camera.csproj">
+      <Project>{190897d9-1b8f-480a-8939-464849d33cf2}</Project>
+      <Name>Stroller.Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stroller.Contracts\Stroller.Contracts.csproj">
       <Project>{7db90c58-c339-42ec-97d6-050a146f2dd9}</Project>
       <Name>Stroller.Contracts</Name>
