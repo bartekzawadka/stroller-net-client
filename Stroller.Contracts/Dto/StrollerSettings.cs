@@ -11,5 +11,7 @@
         public string Camera { get; set; }
 
         public NameValuePair<string>[] Directions { get; set; }
+
+        public bool IsLargeImagesMode { get; set; }
     }
 }

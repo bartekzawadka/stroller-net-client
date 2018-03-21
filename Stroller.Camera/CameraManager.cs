@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using WIA;
 
 namespace Stroller.Camera
@@ -9,6 +10,10 @@ namespace Stroller.Camera
     {
         private static readonly DeviceManager DeviceManager;
         private static string _camera;
+        private static Device _cameraDevice;
+        private static Action<byte[], Exception> _callbackAction;
+
+        private static SynchronizationContext _synchronizationContext;
 
         static CameraManager()
         {
@@ -39,9 +44,9 @@ namespace Stroller.Camera
             _camera = camera;
         }
 
-        public static byte[] Capture()
+        public static void Capture()
         {
-            if(string.IsNullOrEmpty(_camera))
+            if (string.IsNullOrEmpty(_camera))
                 throw new Exception("Capturing device is not set");
 
             var device = GetCameraInfos()
@@ -52,25 +57,78 @@ namespace Stroller.Camera
                     "Could not connect to camera '" + _camera + "'. Please try restarting device");
             }
 
-            var camera = device.Connect();
+            _cameraDevice = device.Connect();
 
-            var dialog = new CommonDialogClass();
-            var result = dialog.ShowTransfer(camera.Items[1], FormatID.wiaFormatJPEG, true);
+            var commandId = string.Empty;
 
-//            var result = //camera.Items[1].Transfer(FormatID.wiaFormatJPEG);
-            if (result == null)
+            foreach (IDeviceCommand cameraCommand in _cameraDevice.Commands)
             {
-                throw new Exception(
-                    "Capturing failed. Empty data received");
+                if (cameraCommand.Name.ToLower() == "take picture")
+                {
+                    commandId = cameraCommand.CommandID;
+                    break;
+                }
             }
 
-            if (!(result is ImageFile image) || image.FileData == null)
+            if (string.IsNullOrEmpty(commandId))
             {
-                throw new Exception(
-                    "Capturing failed. Received data is not a valid ImageFile object");
+                throw new Exception("Device '" + _camera + "' does not provide 'Take Picture' command");
             }
 
-            return (byte[]) image.FileData.get_BinaryData();
+            _synchronizationContext = SynchronizationContext.Current;
+
+            DeviceManager.RegisterEvent(EventID.wiaEventItemCreated, _cameraDevice.DeviceID);
+            DeviceManager.RegisterEvent(EventID.wiaEventDeviceDisconnected, _cameraDevice.DeviceID);
+            DeviceManager.OnEvent += DeviceManager_OnEvent;
+            _cameraDevice.ExecuteCommand(commandId);
+        }
+
+        public static void SetCaptureCallback(Action<byte[], Exception> callback)
+        {
+            _callbackAction = callback;
+        }
+
+        private static void DeviceManager_OnEvent(string eventId, string deviceId, string itemId)
+        {
+            if (_cameraDevice != null && eventId == EventID.wiaEventItemCreated && _callbackAction != null)
+            {
+                for (var i = 1; i <= _cameraDevice.Items.Count; i++)
+                {
+                    if (_cameraDevice.Items[i].ItemID == itemId)
+                    {
+                        var obj = _cameraDevice.Items[i].Transfer(FormatID.wiaFormatJPEG);
+
+                        if (!(obj is ImageFile))
+                        {
+                            if (_callbackAction != null)
+                            {
+                                ExecuteSynchedWithContext(() =>
+                                {
+                                    _callbackAction(null,
+                                        new Exception("Data received from camera, but format is not valid"));
+                                });
+                            }
+
+                            break;
+                        }
+
+                        var image = (ImageFile)obj;
+                        var buff = (byte[])image.FileData.get_BinaryData();
+
+                        _cameraDevice.Items.Remove(i);
+
+                        if (_callbackAction != null)
+                        {
+                            ExecuteSynchedWithContext(() => { _callbackAction(buff, null); });
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            DeviceManager.UnregisterEvent(eventId, deviceId);
+            DeviceManager.OnEvent -= DeviceManager_OnEvent;
         }
 
         private static IEnumerable<DeviceInfo> GetCameraInfos()
@@ -81,6 +139,18 @@ namespace Stroller.Camera
                 {
                     yield return DeviceManager.DeviceInfos[i];
                 }
+            }
+        }
+
+        private static void ExecuteSynchedWithContext(Action invoke)
+        {
+            if (_synchronizationContext != null)
+            {
+                _synchronizationContext.Post(delegate { invoke.Invoke(); }, null);
+            }
+            else
+            {
+                invoke.Invoke();
             }
         }
     }
