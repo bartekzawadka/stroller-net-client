@@ -16,14 +16,14 @@ namespace Stroller.Bll
                 var response = await client.GetAsync(path);
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception("Request failed");
+                    throw new Exception(response.ReasonPhrase);
                 }
 
                 return await response.Content.ReadAsAsync<T>();
             }
         }
 
-        protected async void ExecutePostService<T>(T data, string function)
+        protected async Task ExecutePostService<T>(T data, string function)
         {
             using (var client = new HttpClient())
             {
@@ -32,7 +32,7 @@ namespace Stroller.Bll
                 var response = await client.PostAsJsonAsync(path, data);
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception("Request failed");
+                    throw new Exception(response.ReasonPhrase);
                 }
             }
         }

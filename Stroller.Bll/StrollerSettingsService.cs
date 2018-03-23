@@ -4,7 +4,7 @@ using Stroller.Contracts.Interfaces;
 
 namespace Stroller.Bll
 {
-    public class StrollerSettingsService : StrollerService, ISettingsService
+    public class StrollerSettingsService : StrollerService, IStrollerSettingsService
     {
         public Task<StrollerSettings> GetSettings()
         {
@@ -16,9 +16,9 @@ namespace Stroller.Bll
             return ExecuteGetService<NameValuePair<string>[]>("directions");
         }
 
-        public void SaveSettings(StrollerSettings settings)
+        public Task SaveSettings(StrollerSettings settings)
         {
-            ExecutePostService(settings, "config");
+            return ExecutePostService(settings, "config");
         }
     }
 }

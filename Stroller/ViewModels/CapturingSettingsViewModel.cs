@@ -11,7 +11,7 @@ namespace Stroller.ViewModels
 {
     public class CapturingSettingsViewModel : DetailsScreen<StrollerSettings>
     {
-        private readonly ISettingsService _settingsService = IoC.Get<ISettingsService>();
+        private readonly IStrollerSettingsService _strollerSettingsService = IoC.Get<IStrollerSettingsService>();
         private NameValuePair<string> _selectedDirection;
         private string _camera;
 
@@ -66,15 +66,11 @@ namespace Stroller.ViewModels
                 CameraManager.SetCurrentCamera(Camera);
             }
 
-            var progress = await ShowProgress("Saving settings", "Sending settings to Stroller. Please wait...",
-                true);
-            progress.SetIndeterminate();
-
-            _settingsService.SaveSettings(Context);
-            CapturingConfiguration.Settings = Context;
-
-            await progress.CloseAsync();
-            IoC.Get<IMain>().GoBack();
+            await ExecuteIntederminateProcess("Saving settings", "Sending settings to Stroller. Please wait...", async () =>
+            {
+                await _strollerSettingsService.SaveSettings(Context);
+                CapturingConfiguration.Settings = Context;
+            }, () => { IoC.Get<IMain>().GoHome(); }, async ex => { await ShowMessage("Opration failed", ex.Message); });
         }
 
         public void LargeImageModeChecked()
@@ -91,32 +87,37 @@ namespace Stroller.ViewModels
 
         private async void LoadSettings(bool useLocalCameras)
         {
-            var progress = await ShowProgress("Loading settings", "Reading settings from Stroller. Please wait...",
-                true);
-            progress.SetIndeterminate();
+            await ExecuteIntederminateProcess("Loading settings", "Reading settings from Stroller. Please wait...",
+                async () =>
+                {
+                    var settings = await _strollerSettingsService.GetSettings();
+                    settings.Directions = await _strollerSettingsService.GetDirections();
 
-            var settings = await _settingsService.GetSettings();
-            settings.Directions = await _settingsService.GetDirections();
+                    SelectedDirection = settings.Directions?.FirstOrDefault(x => x.Value == settings.Direction);
 
-            SelectedDirection = settings.Directions?.FirstOrDefault(x => x.Value == settings.Direction);
+                    if (useLocalCameras)
+                    {
+                        settings.IsLargeImagesMode = false;
+                    }
 
-            if (useLocalCameras)
-            {
-                settings.IsLargeImagesMode = false;
-            }
+                    if (settings.IsLargeImagesMode)
+                    {
+                        settings.Camera = CameraManager.GetCurrentCamera();
+                        settings.Cameras = CameraManager.GetCameras().ToArray();
+                    }
 
-            if (settings.IsLargeImagesMode)
-            {
-                settings.Camera = CameraManager.GetCurrentCamera();
-                settings.Cameras = CameraManager.GetCameras().ToArray();
-            }
+                    Context = settings;
+                    Camera = settings.Camera;
 
-            Context = settings;
-            Camera = settings.Camera;
+                    NotifyOfPropertyChange(nameof(Context));
+                    NotifyOfPropertyChange(nameof(SelectedDirection));
+                }, () => { },
 
-            NotifyOfPropertyChange(nameof(Context));
-
-            await progress.CloseAsync();
+                async ex =>
+                {
+                    await ShowMessage("Operation failed",
+                        "Unable to retrieve configuration from Stroller: " + ex.Message);
+                });
         }
     }
 }
