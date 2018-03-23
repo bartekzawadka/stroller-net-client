@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using Caliburn.Micro;
 using Stroller.Contracts.Dto;
+using Stroller.Contracts.Interfaces;
 using Stroller.Main;
 using Stroller.ViewModels.Common;
 
@@ -9,6 +11,8 @@ namespace Stroller.ViewModels
 {
     public class ConnectionSettingsViewModel : DetailsScreen<ConnectionSettingsInfo>
     {
+        private readonly IStrollerControlService _strollerControlService = IoC.Get<IStrollerControlService>();
+
         public ConnectionSettingsViewModel() : base(IoC.Get<IMain>() as ScreenBase)
         {
             Load();
@@ -23,12 +27,46 @@ namespace Stroller.ViewModels
             };
         }
 
-        public async void Save()
+        public void Save()
+        {
+            Save(true);
+        }
+
+        public async void TestConnection()
+        {
+            var lastIp = Bll.Properties.Settings.Default.IpAddress;
+            var lastPort = Bll.Properties.Settings.Default.Port;
+
+            Save(false);
+
+            await ExecuteIntederminateProcess("Checing connectivity",
+                "Tesing connection with " + Context.IpAddress + ". Please wait...",
+                async () => { await _strollerControlService.GetStatus(); },
+                async () =>
+                {
+                    await ShowMessage("Connection established", "Successfully connected to Stroller system");
+                }, 
+                async ex =>
+                {
+                    await ShowMessage("Connection failed",
+                        "Unable to establish connection with Stroller on " + Context.IpAddress + "." +
+                        Environment.NewLine + ex.Message);
+                });
+
+            Context.IpAddress = lastIp;
+            Context.Port = lastPort.ToString();
+
+            Save(false);
+
+            NotifyOfPropertyChange(nameof(Context));
+        }
+
+        private async void Save(bool close)
         {
             var msg = Validate();
             if (!string.IsNullOrEmpty(msg.Value))
             {
-                await ShowMessage(msg.Key, msg.Value, true);
+                await ShowMessage(msg.Key, msg.Value);
                 return;
             }
 
@@ -36,8 +74,11 @@ namespace Stroller.ViewModels
             Bll.Properties.Settings.Default.Port = int.Parse(Context.Port);
             Bll.Properties.Settings.Default.Save();
 
-            TryClose();
-            IoC.Get<IMain>().GoBack();
+            if (close)
+            {
+                TryClose();
+                IoC.Get<IMain>().GoHome();
+            }
         }
 
         private KeyValuePair<string, string> Validate()

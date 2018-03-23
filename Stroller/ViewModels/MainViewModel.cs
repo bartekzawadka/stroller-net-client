@@ -98,18 +98,19 @@ namespace Stroller.ViewModels
                 CurrentContent = Activator.CreateInstance((Type) SelectedMenuItem.Tag) as ScreenBase;
         }
 
-        public void GoBack()
+        public void GoHome()
         {
-            if (LastView != null)
-            {
-                SelectedMenuItem =
-                    MenuItems.FirstOrDefault(x => x.Tag != null && (Type)x.Tag == LastView.GetType()) as
-                        HamburgerMenuIconItem;
-            }
-            else
-            {
-                SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
-            }
+            SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
+//            if (LastView != null)
+//            {
+//                SelectedMenuItem =
+//                    MenuItems.FirstOrDefault(x => x.Tag != null && (Type)x.Tag == LastView.GetType()) as
+//                        HamburgerMenuIconItem;
+//            }
+//            else
+//            {
+//                SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
+//            }
         }
     }
 }

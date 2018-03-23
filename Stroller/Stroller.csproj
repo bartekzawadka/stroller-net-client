@@ -106,7 +106,6 @@
     <Compile Include="ViewModels\Common\ScreenBase.cs" />
     <Compile Include="ViewModels\ConnectionSettingsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\StrollerSettingsViewModel.cs" />
     <Compile Include="Views\Controls\NButton.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -177,10 +176,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MainView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\StrollerSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

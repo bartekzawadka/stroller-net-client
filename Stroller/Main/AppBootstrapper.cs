@@ -40,8 +40,8 @@ namespace Stroller.Main
             base.ConfigureContainer(builder);
 
             builder.RegisterInstance(new CustomWindowsManager()).As<IWindowManager>();
-            builder.RegisterInstance(new StrollerSettingsService()).As<ISettingsService>();
-
+            builder.RegisterInstance(new StrollerSettingsService()).As<IStrollerSettingsService>();
+            builder.RegisterInstance(new StrollerControlService()).As<IStrollerControlService>();
             builder.RegisterInstance(new MainViewModel()).As<IMain>();
         }
     }

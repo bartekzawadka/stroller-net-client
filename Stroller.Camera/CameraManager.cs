@@ -22,7 +22,14 @@ namespace Stroller.Camera
 
         public static IEnumerable<string> GetCameras()
         {
-            return GetCameraInfos().Select(x => x.Properties[6].get_Value().ToString());
+            var cameras = GetCameraInfos().Select(x => x.Properties[6].get_Value().ToString());
+            var enumerable = cameras as string[] ?? cameras.ToArray();
+            if (!enumerable.Contains(_camera))
+            {
+                _camera = null;
+            }
+
+            return enumerable;
         }
 
         public static string GetCurrentCamera()

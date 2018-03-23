@@ -3,12 +3,12 @@ using Stroller.Contracts.Dto;
 
 namespace Stroller.Contracts.Interfaces
 {
-    public interface ISettingsService
+    public interface IStrollerSettingsService
     {
         Task<StrollerSettings> GetSettings();
 
         Task<NameValuePair<string>[]> GetDirections();
 
-        void SaveSettings(StrollerSettings settings);
+        Task SaveSettings(StrollerSettings settings);
     }
 }
