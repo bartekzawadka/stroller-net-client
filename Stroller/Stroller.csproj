@@ -107,6 +107,9 @@
     <Compile Include="ViewModels\ConnectionSettingsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\Controls\NButton.xaml.cs" />
+    <Compile Include="Views\Controls\NTile.xaml.cs">
+      <DependentUpon>NTile.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main\AppBootstrapper.cs" />
@@ -175,6 +178,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Controls\NTile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -202,7 +209,7 @@
       <Name>Stroller.Bll</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stroller.Camera\Stroller.Camera.csproj">
-      <Project>{190897d9-1b8f-480a-8939-464849d33cf2}</Project>
+      <Project>{190897D9-1B8F-480A-8939-464849D33CF2}</Project>
       <Name>Stroller.Camera</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stroller.Contracts\Stroller.Contracts.csproj">

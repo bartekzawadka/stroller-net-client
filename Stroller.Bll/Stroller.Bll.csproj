@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CapturingConfiguration.cs" />
+    <Compile Include="CapturingManager.cs" />
     <Compile Include="Exceptions\StrollerException.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -55,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StrollerService.cs" />
     <Compile Include="StrollerSettingsService.cs" />
+    <Compile Include="StrollerStatusType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -64,6 +66,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Stroller.Camera\Stroller.Camera.csproj">
+      <Project>{190897d9-1b8f-480a-8939-464849d33cf2}</Project>
+      <Name>Stroller.Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stroller.Contracts\Stroller.Contracts.csproj">
       <Project>{7db90c58-c339-42ec-97d6-050a146f2dd9}</Project>
       <Name>Stroller.Contracts</Name>
