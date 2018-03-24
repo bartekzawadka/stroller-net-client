@@ -1,0 +1,30 @@
+﻿<Button x:Class="Stroller.Views.Controls.NTile"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Stroller.Views.Controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d" Name="CurrentTile" Background="Transparent" BorderThickness="0">
+    <Grid>
+        <Border BorderBrush="{StaticResource AccentColorBrush}" BorderThickness="2" MinWidth="200" MinHeight="200">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <iconPacks:PackIconModern Grid.Row="1"
+                                          Name="IconControl" 
+                                          Width="{Binding ElementName=CurrentTile, Path=IconSize, UpdateSourceTrigger=PropertyChanged}"
+                                          Height="{Binding ElementName=CurrentTile, Path=IconSize, UpdateSourceTrigger=PropertyChanged}" 
+                                          Kind="{Binding ElementName=CurrentTile, Path=Icon, UpdateSourceTrigger=PropertyChanged}" Margin="20"
+                                          HorizontalAlignment="Center" HorizontalContentAlignment="Center" Foreground="{StaticResource GrayBrush1}"></iconPacks:PackIconModern>
+                <TextBlock Grid.Row="3" HorizontalAlignment="Center" Margin="10" Text="{Binding ElementName=CurrentTile, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                           FontSize="14" FontWeight="Bold"
+                           Foreground="{StaticResource GrayBrush1}"></TextBlock>
+            </Grid>
+        </Border>
+    </Grid>
+</Button>

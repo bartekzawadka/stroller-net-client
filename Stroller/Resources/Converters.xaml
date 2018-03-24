@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:Stroller.Common.Converters">
+    <converters:ToUpperConverter x:Key="ToUpperConverter"></converters:ToUpperConverter>
+    <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></converters:BooleanToVisibilityConverter>
+    <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"></converters:InverseBooleanToVisibilityConverter>
+    <converters:CurrencyConverter x:Key="CurrencyConverter"></converters:CurrencyConverter>
+
+</ResourceDictionary>
