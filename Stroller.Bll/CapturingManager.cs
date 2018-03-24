@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using Stroller.Contracts.Dto;
@@ -61,6 +62,40 @@ namespace Stroller.Bll
         public static void RemoveDir(string dir)
         {
             Directory.Delete(dir, true);
+        }
+
+        public static string GetThumbnail(ImageStorageInfo storageInfo)
+        {
+            var files = Directory.GetFiles(storageInfo.FullPath, "*.jpg");
+            if (files.Length == 0)
+                return null;
+
+            var index = (int) Math.Round((double) (files.Length / 2));
+            if (index < 0 || index > files.Length - 1)
+                index = 0;
+
+            string result;
+
+            using (var fs = File.Open(files[index], FileMode.Open, FileAccess.Read))
+            {
+                using (var img = System.Drawing.Image.FromStream(fs))
+                {
+                    var destinationHeight = (int) (img.Height * 1.0 / (img.Width * 1.0) * 200);
+                    using (var thumb = img.GetThumbnailImage(200, destinationHeight, () => false, IntPtr.Zero))
+                    {
+                        byte[] buff;
+                        using (var ms = new MemoryStream())
+                        {
+                            thumb.Save(ms, ImageFormat.Jpeg);
+                            buff = ms.ToArray();
+                        }
+
+                        result = Convert.ToBase64String(buff);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -92,12 +92,12 @@ namespace Stroller.ViewModels
 
                 if (processData.Status == AcquisitionStatusType.Finished)
                 {
-                    // TODO: Implement thumbnail creation
-                    CapturingManager.SaveImage(imageStorageInfo, index+1, null);
+                    CapturingManager.SaveImage(imageStorageInfo, index + 1,
+                        CapturingManager.GetThumbnail(imageStorageInfo));
 
                     await progress.CloseAsync();
 
-                    ShowInfo("Operation finished", "Image successfully acquired!");
+                    await ShowMessage("Operation finished", "Image successfully acquired!");
                 }
                 else
                 {
@@ -115,13 +115,8 @@ namespace Stroller.ViewModels
 
             CapturingManager.RemoveDir(imagesPath);
 
-            ShowInfo(title,
+            await ShowMessage(title,
                 message);
-        }
-
-        private async void ShowInfo(string title, string message)
-        {
-            await ShowMessage(title, message);
         }
     }
 }
