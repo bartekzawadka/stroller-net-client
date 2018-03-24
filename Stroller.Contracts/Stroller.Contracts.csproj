@@ -61,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializable\Image.cs" />
     <Compile Include="Serializable\Record.cs" />
+    <Compile Include="StrollerStatusType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

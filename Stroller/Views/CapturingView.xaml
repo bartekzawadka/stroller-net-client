@@ -18,6 +18,6 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <controls:NTile x:Name="StartCapturing" Grid.Row="1" Grid.Column="1" Text="CAPTURE" Icon="Camera" IconSize="100"></controls:NTile>
+        <controls:NTile x:Name="StartCapturing" Grid.Row="1" Grid.Column="1" Text="CAPTURE" Icon="Camera" IconSize="100" IsEnabled="{Binding IsAcquisitionEnabled, UpdateSourceTrigger=PropertyChanged}"></controls:NTile>
     </Grid>
 </UserControl>

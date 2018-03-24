@@ -12,23 +12,32 @@ using Stroller.ViewModels.Common;
 
 namespace Stroller.ViewModels
 {
-    public class CapturingViewModel: ScreenBase
+    public class CapturingViewModel : ScreenBase
     {
         private readonly IStrollerControlService _strollerControlService = IoC.Get<IStrollerControlService>();
+        private StrollerStatus _status = new StrollerStatus();
+
+        public bool IsAcquisitionEnabled => CapturingConfiguration.IsReadyToCapture;
 
         public CapturingViewModel() : base(IoC.Get<IMain>() as ScreenBase)
         {
         }
 
+        protected override void OnViewLoaded(object view)
+        {
+            GetStatus();
+            //NotifyOfPropertyChange(nameof(IsAcquisitionEnabled));
+        }
+
         public async void StartCapturing()
         {
             // TODO: Uncomment when status fetching is implemented
-//                        if (!CapturingConfiguration.IsReadyToCapture)
-//                        {
-//                            await ShowMessage("Operation failed",
-//                                "Cannot start capturing. Device is busy or camera not selected");
-//                            return;
-//                        }
+            //                        if (!CapturingConfiguration.IsReadyToCapture)
+            //                        {
+            //                            await ShowMessage("Operation failed",
+            //                                "Cannot start capturing. Device is busy or camera not selected");
+            //                            return;
+            //                        }
 
             var imageStorageInfo = CapturingManager.Initialize();
 
@@ -117,6 +126,21 @@ namespace Stroller.ViewModels
 
             await ShowMessage(title,
                 message);
+        }
+
+        private async void GetStatus()
+        {
+            await ExecuteIntederminateProcess("Reading status", "Getting Stroller status. Please wait...",
+                async () =>
+                {
+                    _status = await _strollerControlService.GetStatus();
+                    NotifyOfPropertyChange(nameof(IsAcquisitionEnabled));
+                },
+                () => { },
+                async exception =>
+                {
+                    await ShowMessage("Operation failed", "Unable to read Stroller status: " + exception.Message);
+                });
         }
     }
 }

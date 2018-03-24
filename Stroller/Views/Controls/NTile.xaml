@@ -7,7 +7,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" Name="CurrentTile" Background="Transparent" BorderThickness="0">
     <Grid>
-        <Border BorderBrush="{StaticResource AccentColorBrush}" BorderThickness="2" MinWidth="200" MinHeight="200">
+        <Border Name="TileBorder" BorderBrush="{StaticResource AccentColorBrush}" BorderThickness="2" MinWidth="200" MinHeight="200">
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -20,10 +20,10 @@
                                           Width="{Binding ElementName=CurrentTile, Path=IconSize, UpdateSourceTrigger=PropertyChanged}"
                                           Height="{Binding ElementName=CurrentTile, Path=IconSize, UpdateSourceTrigger=PropertyChanged}" 
                                           Kind="{Binding ElementName=CurrentTile, Path=Icon, UpdateSourceTrigger=PropertyChanged}" Margin="20"
-                                          HorizontalAlignment="Center" HorizontalContentAlignment="Center" Foreground="{StaticResource GrayBrush1}"></iconPacks:PackIconModern>
-                <TextBlock Grid.Row="3" HorizontalAlignment="Center" Margin="10" Text="{Binding ElementName=CurrentTile, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center" HorizontalContentAlignment="Center" Foreground="{StaticResource AccentColorBrush}"></iconPacks:PackIconModern>
+                <TextBlock Name="TileText" Grid.Row="3" HorizontalAlignment="Center" Margin="10" Text="{Binding ElementName=CurrentTile, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                            FontSize="14" FontWeight="Bold"
-                           Foreground="{StaticResource GrayBrush1}"></TextBlock>
+                           Foreground="{StaticResource AccentColorBrush}"></TextBlock>
             </Grid>
         </Border>
     </Grid>

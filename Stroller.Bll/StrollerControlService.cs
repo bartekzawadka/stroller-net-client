@@ -8,7 +8,8 @@ namespace Stroller.Bll
     {
         public Task<StrollerStatus> GetStatus()
         {
-            return ExecuteGetService<StrollerStatus>("status");
+            return ExecuteGetService<StrollerStatus>("status",
+                status => { CapturingConfiguration.Status = status.Status; });
         }
 
         public Task<CapturingProgressInfo> Capture()
