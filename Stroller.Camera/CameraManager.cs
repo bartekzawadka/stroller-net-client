@@ -95,7 +95,7 @@ namespace Stroller.Camera
             _callbackAction = callback;
         }
 
-        private static void DeviceManager_OnEvent(string eventId, string deviceId, string itemId)
+        private static async void DeviceManager_OnEvent(string eventId, string deviceId, string itemId)
         {
             if (_cameraDevice != null && eventId == EventID.wiaEventItemCreated && _callbackAction != null)
             {

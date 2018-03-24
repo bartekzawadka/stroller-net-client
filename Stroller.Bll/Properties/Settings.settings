@@ -8,5 +8,8 @@
     <Setting Name="Port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4000</Value>
     </Setting>
+    <Setting Name="ImagesDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\StrollerImages</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

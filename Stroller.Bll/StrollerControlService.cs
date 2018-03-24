@@ -9,6 +9,21 @@ namespace Stroller.Bll
         public Task<StrollerStatus> GetStatus()
         {
             return ExecuteGetService<StrollerStatus>("status");
-        } 
+        }
+
+        public Task<CapturingProgressInfo> Capture()
+        {
+            return ExecuteGetService<CapturingProgressInfo>("capture");
+        }
+
+        public Task CancelCapturing(CancellingInfo data)
+        {
+            return ExecutePostService(data, "capture/cancel");
+        }
+
+        public Task<CapturingProgressInfo> SendToRotate(SendToRotateInfo data)
+        {
+            return ExecutePostService<SendToRotateInfo, CapturingProgressInfo>(data, "image");
+        }
     }
 }
