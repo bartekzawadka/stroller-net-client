@@ -57,6 +57,7 @@
     <Compile Include="StrollerService.cs" />
     <Compile Include="StrollerSettingsService.cs" />
     <Compile Include="StrollerStatusType.cs" />
+    <Compile Include="XmlFileSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

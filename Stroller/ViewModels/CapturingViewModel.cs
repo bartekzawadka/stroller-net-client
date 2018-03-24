@@ -30,7 +30,7 @@ namespace Stroller.ViewModels
 //                            return;
 //                        }
 
-            var imagesPath = CapturingManager.Initialize();
+            var imageStorageInfo = CapturingManager.Initialize();
 
             var progress = await ShowProgress("Capturing", "360 image acquisition pending...");
             progress.Minimum = 0.0;
@@ -61,7 +61,7 @@ namespace Stroller.ViewModels
                 if (exception != null)
                 {
                     StopProcessAndShowError("Capturing failed",
-                        "Error occured during image acquisition process: " + exception.Message, progress, imagesPath);
+                        "Error occured during image acquisition process: " + exception.Message, progress, imageStorageInfo.FullPath);
                     return;
                 }
 
@@ -74,7 +74,7 @@ namespace Stroller.ViewModels
                             Token = str.Token
                         });
                         StopProcessAndShowError("Operation cancelled",
-                            "360 image acquisition process has been cancelled by the user", progress, imagesPath);
+                            "360 image acquisition process has been cancelled by the user", progress, imageStorageInfo.FullPath);
                         return;
                     }
 
@@ -83,16 +83,17 @@ namespace Stroller.ViewModels
                 catch (Exception ex)
                 {
                     StopProcessAndShowError("Capturing failed",
-                        "Error occured during image acquisition process: " + ex.Message, progress, imagesPath);
+                        "Error occured during image acquisition process: " + ex.Message, progress, imageStorageInfo.FullPath);
                     return;
                 }
 
                 progress.SetProgress(processData.Progress);
-                CapturingManager.AppendImage(bytes, imagesPath, index);
+                CapturingManager.AppendImage(bytes, imageStorageInfo.FullPath, index);
 
                 if (processData.Status == AcquisitionStatusType.Finished)
                 {
-                    // TODO: Save image record via CapturingManager
+                    // TODO: Implement thumbnail creation
+                    CapturingManager.SaveImage(imageStorageInfo, index+1, null);
 
                     await progress.CloseAsync();
 

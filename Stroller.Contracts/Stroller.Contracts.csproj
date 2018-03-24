@@ -49,6 +49,7 @@
     <Compile Include="Dto\CapturingInfo.cs" />
     <Compile Include="Dto\CapturingProgressInfo.cs" />
     <Compile Include="Dto\ConnectionSettingsInfo.cs" />
+    <Compile Include="Dto\ImageStorageInfo.cs" />
     <Compile Include="Dto\NameValuePair.cs" />
     <Compile Include="Dto\SendToRotateInfo.cs" />
     <Compile Include="Dto\StrollerConnection.cs" />
@@ -58,6 +59,8 @@
     <Compile Include="Interfaces\IStrollerControlService.cs" />
     <Compile Include="Interfaces\IStrollerSettingsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializable\Image.cs" />
+    <Compile Include="Serializable\Record.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
