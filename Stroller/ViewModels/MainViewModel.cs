@@ -73,7 +73,8 @@ namespace Stroller.ViewModels
                 new HamburgerMenuIconItem
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.ImageGallery},
-                    Label = "Browse images"
+                    Label = "Browse images",
+                    Tag = typeof(BrowseImagesViewModel)
                 },
                 new HamburgerMenuIconItem
                 {
@@ -88,8 +89,6 @@ namespace Stroller.ViewModels
                     Tag = typeof(ConnectionSettingsViewModel)
                 },
             };
-
-            LastView = MenuItems[0].Tag as ScreenBase;
         }
 
         public void UpdateView()
@@ -111,6 +110,12 @@ namespace Stroller.ViewModels
 //            {
 //                SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
 //            }
+        }
+
+        protected override void OnViewLoaded(object view)
+        {
+            LastView = MenuItems[0].Tag as ScreenBase;
+            SelectedMenuItem = MenuItems[0] as HamburgerMenuIconItem;
         }
     }
 }
