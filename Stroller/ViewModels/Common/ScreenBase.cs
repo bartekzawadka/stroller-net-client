@@ -32,7 +32,7 @@ namespace Stroller.ViewModels.Common
         }
 
         public Task<MessageDialogResult> ShowConfirmation(string title, string message,
-            string affirmativeButtonText = "Tak", string negativeButtonText = "Nie", bool showOnParentScreen = true)
+            string affirmativeButtonText = "Yes", string negativeButtonText = "No", bool showOnParentScreen = true)
         {
             var view = GetWindowThisOrParent(showOnParentScreen);
             return view.ShowMessageAsync(title, message, MessageDialogStyle.AffirmativeAndNegative,
