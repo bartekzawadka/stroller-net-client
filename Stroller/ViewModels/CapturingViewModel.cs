@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using Caliburn.Micro;
 using MahApps.Metro.Controls.Dialogs;
 using Stroller.Bll;
@@ -12,23 +13,57 @@ using Stroller.ViewModels.Common;
 
 namespace Stroller.ViewModels
 {
-    public class CapturingViewModel: ScreenBase
+    public class CapturingViewModel : ScreenBase
     {
         private readonly IStrollerControlService _strollerControlService = IoC.Get<IStrollerControlService>();
+        private StrollerStatus _status = new StrollerStatus();
+        private string _statusText = StrollerStatusType.Unknown;
+        private Brush _statusForeground = Application.Current.Resources["GrayBrush2"] as Brush;
+
+        public bool IsAcquisitionEnabled => CapturingConfiguration.IsReadyToCapture;
+
+        public Brush StatusForeground
+        {
+            get => _statusForeground;
+            set
+            {
+                if (Equals(value, _statusForeground)) return;
+                _statusForeground = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public string StatusText
+        {
+            get => _statusText;
+            set
+            {
+                if (value == _statusText) return;
+                _statusText = value;
+                NotifyOfPropertyChange();
+                NotifyOfPropertyChange(nameof(IsReleaseAvailable));
+            }
+        }
+
+        public bool IsReleaseAvailable => _status.Status == StrollerStatusType.Busy;
 
         public CapturingViewModel() : base(IoC.Get<IMain>() as ScreenBase)
         {
         }
 
+        protected override void OnViewLoaded(object view)
+        {
+            RefreshStatus();
+        }
+
         public async void StartCapturing()
         {
-            // TODO: Uncomment when status fetching is implemented
-//                        if (!CapturingConfiguration.IsReadyToCapture)
-//                        {
-//                            await ShowMessage("Operation failed",
-//                                "Cannot start capturing. Device is busy or camera not selected");
-//                            return;
-//                        }
+            if (!CapturingConfiguration.IsReadyToCapture)
+            {
+                await ShowMessage("Operation failed",
+                    "Cannot start capturing. Device is busy or camera not selected");
+                return;
+            }
 
             var imageStorageInfo = CapturingManager.Initialize();
 
@@ -109,6 +144,44 @@ namespace Stroller.ViewModels
             CameraManager.Capture();
         }
 
+        public async void RefreshStatus()
+        {
+            await ExecuteIntederminateProcess("Reading status", "Getting Stroller status. Please wait...",
+                async () =>
+                {
+                    _status = await _strollerControlService.GetStatus();
+                    SetColorForStatus();
+                    NotifyOfPropertyChange(nameof(IsAcquisitionEnabled));
+                },
+                () => { },
+                async exception =>
+                {
+                    await ShowMessage("Operation failed", "Unable to read Stroller status: " + exception.Message);
+                });
+        }
+
+        public async void ReleaseDevice()
+        {
+            var dialogResult = await ShowConfirmation("Device busy",
+                "Releasing currently working device may impact result images. Do you want to continue anyway?", "Yes",
+                "No");
+
+            if (dialogResult != MessageDialogResult.Affirmative)
+                return;
+
+            await ExecuteIntederminateProcess("Releasing device", "Releasing Stroller. Please wait...", async () =>
+                {
+                    await _strollerControlService.CancelCapturing(new CancellingInfo
+                    {
+                        Force = true
+                    });
+                }, () => { RefreshStatus(); },
+                async exception =>
+                {
+                    await ShowMessage("Releasing failed", "Unable to release Stroller: " + exception.Message);
+                });
+        }
+
         private async void StopProcessAndShowError(string title, string message, ProgressDialogController progress, string imagesPath)
         {
             await progress.CloseAsync();
@@ -117,6 +190,24 @@ namespace Stroller.ViewModels
 
             await ShowMessage(title,
                 message);
+        }
+
+        private void SetColorForStatus()
+        {
+            switch (_status.Status)
+            {
+                case StrollerStatusType.Unknown:
+                    StatusForeground = Application.Current.Resources["GrayBrush2"] as Brush;
+                    break;
+                case StrollerStatusType.Busy:
+                    StatusForeground = Brushes.Red;
+                    break;
+                case StrollerStatusType.Ready:
+                    StatusForeground = Brushes.Green;
+                    break;
+            }
+
+            StatusText = _status.Status.ToUpper();
         }
     }
 }

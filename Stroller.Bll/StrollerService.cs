@@ -6,7 +6,7 @@ namespace Stroller.Bll
 {
     public abstract class StrollerService
     {
-        protected async Task<T> ExecuteGetService<T>(string function)
+        protected async Task<T> ExecuteGetService<T>(string function, Action<T> operateResultAction = null)
         {
             using (var client = new HttpClient())
             {
@@ -19,7 +19,11 @@ namespace Stroller.Bll
                     throw new Exception(response.ReasonPhrase);
                 }
 
-                return await response.Content.ReadAsAsync<T>();
+                var result = await response.Content.ReadAsAsync<T>();
+
+                operateResultAction?.Invoke(result);
+
+                return result;
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using Stroller.Contracts.Dto;
+﻿using System;
+using Stroller.Contracts.Dto;
 
 namespace Stroller.Bll
 {
