@@ -21,5 +21,7 @@ namespace Stroller.Contracts.Interfaces
         StrollerImageObject GetImageJson(string dirName);
 
         byte[] GetImageZip(string dirName);
+
+        IEnumerable<byte[]> GetImageBytes(string dirName);
     }
 }

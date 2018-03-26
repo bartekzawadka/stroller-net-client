@@ -103,7 +103,7 @@ namespace Stroller.ViewModels
 
         public void OpenItem(ImageListItemEventArgs e)
         {
-
+            ShowDialog(new ImageViewModel(e.ImageListItem.DirectoryName));
         }
     }
 }

@@ -125,10 +125,14 @@
     <Compile Include="ViewModels\Common\ListScreen.cs" />
     <Compile Include="ViewModels\Common\ScreenBase.cs" />
     <Compile Include="ViewModels\ConnectionSettingsViewModel.cs" />
+    <Compile Include="ViewModels\ImageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\Controls\NButton.xaml.cs" />
     <Compile Include="Views\Controls\NImage.xaml.cs">
       <DependentUpon>NImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\NImagePreview.xaml.cs">
+      <DependentUpon>NImagePreview.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\NImagesList.xaml.cs">
       <DependentUpon>NImagesList.xaml</DependentUpon>
@@ -215,11 +219,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\NImagePreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Controls\NImagesList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\NTile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ImageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
