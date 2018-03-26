@@ -201,5 +201,21 @@ namespace Stroller.Bll
 
             return buff;
         }
+
+        public IEnumerable<byte[]> GetImageBytes(string dirName)
+        {
+            var path = Path.Combine(Properties.Settings.Default.ImagesDir, dirName);
+            var files = Directory.GetFiles(path, "*.jpg");
+
+            foreach (var file in files)
+            {
+                using (var fs = File.Open(file, FileMode.Open, FileAccess.Read))
+                {
+                    var buff = new byte[fs.Length];
+                    fs.Read(buff, 0, buff.Length);
+                    yield return buff;
+                }
+            }
+        }
     }
 }
