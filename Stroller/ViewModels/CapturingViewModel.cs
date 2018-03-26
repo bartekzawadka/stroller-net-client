@@ -16,6 +16,7 @@ namespace Stroller.ViewModels
     public class CapturingViewModel : ScreenBase
     {
         private readonly IStrollerControlService _strollerControlService = IoC.Get<IStrollerControlService>();
+        private readonly IStrollerImageService _strollerImageService = IoC.Get<IStrollerImageService>();
         private StrollerStatus _status = new StrollerStatus();
         private string _statusText = StrollerStatusType.Unknown;
         private Brush _statusForeground = Application.Current.Resources["GrayBrush2"] as Brush;
@@ -65,7 +66,7 @@ namespace Stroller.ViewModels
                 return;
             }
 
-            var imageStorageInfo = CapturingManager.Initialize();
+            var imageStorageInfo = _strollerImageService.Initialize();
 
             var progress = await ShowProgress("Capturing", "360 image acquisition pending...");
             progress.Minimum = 0.0;
@@ -96,7 +97,7 @@ namespace Stroller.ViewModels
                 if (exception != null)
                 {
                     StopProcessAndShowError("Capturing failed",
-                        "Error occured during image acquisition process: " + exception.Message, progress, imageStorageInfo.FullPath);
+                        "Error occured during image acquisition process: " + exception.Message, progress, imageStorageInfo.DirectoryName);
                     return;
                 }
 
@@ -109,7 +110,7 @@ namespace Stroller.ViewModels
                             Token = str.Token
                         });
                         StopProcessAndShowError("Operation cancelled",
-                            "360 image acquisition process has been cancelled by the user", progress, imageStorageInfo.FullPath);
+                            "360 image acquisition process has been cancelled by the user", progress, imageStorageInfo.DirectoryName);
                         return;
                     }
 
@@ -118,17 +119,17 @@ namespace Stroller.ViewModels
                 catch (Exception ex)
                 {
                     StopProcessAndShowError("Capturing failed",
-                        "Error occured during image acquisition process: " + ex.Message, progress, imageStorageInfo.FullPath);
+                        "Error occured during image acquisition process: " + ex.Message, progress, imageStorageInfo.DirectoryName);
                     return;
                 }
 
                 progress.SetProgress(processData.Progress);
-                CapturingManager.AppendImage(bytes, imageStorageInfo.FullPath, index);
+                _strollerImageService.AppendImage(bytes, imageStorageInfo.FullPath, index);
 
                 if (processData.Status == AcquisitionStatusType.Finished)
                 {
-                    CapturingManager.SaveImage(imageStorageInfo, index + 1,
-                        CapturingManager.GetThumbnail(imageStorageInfo));
+                    _strollerImageService.SaveImage(imageStorageInfo, index + 1,
+                        _strollerImageService.GetThumbnail(imageStorageInfo));
 
                     await progress.CloseAsync();
 
@@ -186,7 +187,7 @@ namespace Stroller.ViewModels
         {
             await progress.CloseAsync();
 
-            CapturingManager.RemoveDir(imagesPath);
+            _strollerImageService.RemoveDir(imagesPath);
 
             await ShowMessage(title,
                 message);
