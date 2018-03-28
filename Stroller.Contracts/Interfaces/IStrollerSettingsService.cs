@@ -1,14 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Stroller.Contracts.Dto;
 
 namespace Stroller.Contracts.Interfaces
 {
     public interface IStrollerSettingsService
     {
-        Task<StrollerSettings> GetSettings();
+        Task<StrollerSettings> GetSettings(CancellationToken cancellationToken);
 
-        Task<NameValuePair<string>[]> GetDirections();
+        Task<NameValuePair<string>[]> GetDirections(CancellationToken cancellationToken);
 
-        Task SaveSettings(StrollerSettings settings);
+        Task SaveSettings(StrollerSettings settings, CancellationToken cancellationToken);
     }
 }

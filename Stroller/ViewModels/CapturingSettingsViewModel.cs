@@ -66,9 +66,9 @@ namespace Stroller.ViewModels
                 CameraManager.SetCurrentCamera(Camera);
             }
 
-            await ExecuteIntederminateProcess("Saving settings", "Sending settings to Stroller. Please wait...", async () =>
+            await ExecuteIntederminateProcess("Saving settings", "Sending settings to Stroller. Please wait...", async token =>
             {
-                await _strollerSettingsService.SaveSettings(Context);
+                await _strollerSettingsService.SaveSettings(Context, token);
                 CapturingConfiguration.Settings = Context;
             }, () => { IoC.Get<IMain>().GoHome(); }, async ex => { await ShowMessage("Opration failed", ex.Message); });
         }
@@ -88,10 +88,10 @@ namespace Stroller.ViewModels
         private async void LoadSettings(bool useLocalCameras)
         {
             await ExecuteIntederminateProcess("Loading settings", "Reading settings from Stroller. Please wait...",
-                async () =>
+                async token =>
                 {
-                    var settings = await _strollerSettingsService.GetSettings();
-                    settings.Directions = await _strollerSettingsService.GetDirections();
+                    var settings = await _strollerSettingsService.GetSettings(token);
+                    settings.Directions = await _strollerSettingsService.GetDirections(token);
 
                     SelectedDirection = settings.Directions?.FirstOrDefault(x => x.Value == settings.Direction);
 

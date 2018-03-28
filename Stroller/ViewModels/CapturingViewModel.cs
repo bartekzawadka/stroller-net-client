@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using Caliburn.Micro;
@@ -77,7 +78,7 @@ namespace Stroller.ViewModels
 
             try
             {
-                processData = await _strollerControlService.Capture();
+                processData = await _strollerControlService.Capture(CancellationToken.None);
             }
             catch (Exception ex)
             {
@@ -108,13 +109,13 @@ namespace Stroller.ViewModels
                         await _strollerControlService.CancelCapturing(new CancellingInfo
                         {
                             Token = str.Token
-                        });
+                        }, CancellationToken.None);
                         StopProcessAndShowError("Operation cancelled",
                             "360 image acquisition process has been cancelled by the user", progress, imageStorageInfo.DirectoryName);
                         return;
                     }
 
-                    processData = await _strollerControlService.SendToRotate(str);
+                    processData = await _strollerControlService.SendToRotate(str, CancellationToken.None);
                 }
                 catch (Exception ex)
                 {
@@ -148,9 +149,9 @@ namespace Stroller.ViewModels
         public async void RefreshStatus()
         {
             await ExecuteIntederminateProcess("Reading status", "Getting Stroller status. Please wait...",
-                async () =>
+                async token =>
                 {
-                    _status = await _strollerControlService.GetStatus();
+                    _status = await _strollerControlService.GetStatus(token);
                     SetColorForStatus();
                     NotifyOfPropertyChange(nameof(IsAcquisitionEnabled));
                 },
@@ -164,18 +165,17 @@ namespace Stroller.ViewModels
         public async void ReleaseDevice()
         {
             var dialogResult = await ShowConfirmation("Device busy",
-                "Releasing currently working device may impact result images. Do you want to continue anyway?", "Yes",
-                "No");
+                "Releasing currently working device may impact result images. Do you want to continue anyway?");
 
             if (dialogResult != MessageDialogResult.Affirmative)
                 return;
 
-            await ExecuteIntederminateProcess("Releasing device", "Releasing Stroller. Please wait...", async () =>
+            await ExecuteIntederminateProcess("Releasing device", "Releasing Stroller. Please wait...", async token =>
                 {
                     await _strollerControlService.CancelCapturing(new CancellingInfo
                     {
                         Force = true
-                    });
+                    }, token);
                 }, () => { RefreshStatus(); },
                 async exception =>
                 {
