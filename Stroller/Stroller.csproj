@@ -23,6 +23,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <TargetCulture>en-US</TargetCulture>
+    <ProductName>Stroller</ProductName>
+    <PublisherName>Nathalie</PublisherName>
+    <SuiteName>Stroller</SuiteName>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -255,7 +259,9 @@
     <Resource Include="Resources\Img\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Img\icon_white.ico" />
+    <Resource Include="Resources\Img\icon_white.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Img\icon_white.png" />
   </ItemGroup>
   <ItemGroup>

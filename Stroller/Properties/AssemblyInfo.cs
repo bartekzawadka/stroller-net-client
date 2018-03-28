@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Stroller")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Stroller")]
 [assembly: AssemblyProduct("Stroller")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
