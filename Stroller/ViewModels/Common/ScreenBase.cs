@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using MahApps.Metro.Controls;
@@ -55,19 +56,31 @@ namespace Stroller.ViewModels.Common
             return view.ShowProgressAsync(title, message);
         }
 
-        public async Task ExecuteIntederminateProcess(string title, string message, Func<Task> invoke,
+        public async Task ExecuteIntederminateProcess(string title, string message, Func<CancellationToken, Task> invoke,
             Func<Task> onSuccess = null, Func<Exception, Task> onFail = null, bool showOnParentScreen = true)
         {
             var progress = await ShowProgress(title, message);
             progress.SetIndeterminate();
+            progress.SetCancelable(true);
+
+            var cancellationSource = new CancellationTokenSource();
+
+            progress.Canceled += (s, e) =>
+            {
+                cancellationSource.Cancel();
+            };
 
             try
             {
-                await invoke();
+                await invoke(cancellationSource.Token);
                 await progress.CloseAsync();
 
                 if (onSuccess != null)
                     await onSuccess.Invoke();
+            }
+            catch (TaskCanceledException)
+            {
+                await progress.CloseAsync();
             }
             catch (Exception e)
             {
@@ -77,18 +90,31 @@ namespace Stroller.ViewModels.Common
             }
         }
 
-        public async Task ExecuteIntederminateProcess(string title, string message, Func<Task> invoke,
+        public async Task ExecuteIntederminateProcess(string title, string message, Func<CancellationToken, Task> invoke,
             Action onSuccess = null, Func<Exception, Task> onFail = null, bool showOnParentScreen = true)
         {
             var progress = await ShowProgress(title, message);
             progress.SetIndeterminate();
+            progress.SetCancelable(true);
+
+            var cancellationSource = new CancellationTokenSource();
+
+            progress.Canceled += (s, e) =>
+            {
+                cancellationSource.Cancel(); 
+            };
 
             try
             {
-                await invoke();
+
+                await invoke(cancellationSource.Token);
                 await progress.CloseAsync();
 
                 onSuccess?.Invoke();
+            }
+            catch (TaskCanceledException)
+            {
+                await progress.CloseAsync();
             }
             catch (Exception e)
             {

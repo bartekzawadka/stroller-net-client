@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using Caliburn.Micro;
 using Stroller.Contracts.Dto;
 using Stroller.Contracts.Interfaces;
@@ -41,7 +42,7 @@ namespace Stroller.ViewModels
 
             await ExecuteIntederminateProcess("Checing connectivity",
                 "Tesing connection with " + Context.IpAddress + ". Please wait...",
-                async () => { await _strollerControlService.GetStatus(); },
+                async (token) => { await _strollerControlService.GetStatus(token); },
                 async () =>
                 {
                     await ShowMessage("Connection established", "Successfully connected to Stroller system");
