@@ -117,6 +117,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2D86FE7641DD41B0BCAE3304E9FC5235"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2DF1DE32A5E18A709227BA37B710113C"
         "OwnerKey" = "8:_F47214FA72834D58BE4036CF0C8A3774"
         "MsmSig" = "8:_UNDEFINED"
@@ -1130,6 +1136,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "Release"
@@ -1531,6 +1545,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D86FE7641DD41B0BCAE3304E9FC5235"
+            {
+            "SourcePath" = "8:..\\Stroller\\Resources\\Img\\icon.ico"
+            "TargetName" = "8:icon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_3897C7EA503E4FD3825A2128A962E75A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2DF1DE32A5E18A709227BA37B710113C"
@@ -3057,7 +3091,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -3434,7 +3468,7 @@
             "{1525181F-901A-416C-8A58-119130FE478E}:_C9F25EEE87E441D19FD54294E6CEDFA2"
             {
             "Name" = "8:#1919"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:ProgramMenuFolder"
@@ -3459,7 +3493,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Stroller"
         "ProductCode" = "8:{911A7225-6C7F-4A3A-8309-31DB235A8A2C}"
-        "PackageCode" = "8:{D87CBF2A-F27F-4318-8ABF-392BDB910DBB}"
+        "PackageCode" = "8:{2E290C07-ED20-4373-8444-54DB159ECA7D}"
         "UpgradeCode" = "8:{8D6D1CEC-1BFC-4773-B40E-D4366839D6BB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -3476,7 +3510,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:Stroller control system"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:_59614CF53167430C91CC6B7521DEEB32"
+        "ARPPRODUCTICON" = "8:_2D86FE7641DD41B0BCAE3304E9FC5235"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -3579,6 +3613,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_BF04922C05DA491AA6BC33FC67E9014D"
+            {
+            "Name" = "8:Stroller"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_F47214FA72834D58BE4036CF0C8A3774"
+            "Folder" = "8:_C9F25EEE87E441D19FD54294E6CEDFA2"
+            "WorkingFolder" = "8:_3897C7EA503E4FD3825A2128A962E75A"
+            "Icon" = "8:_2D86FE7641DD41B0BCAE3304E9FC5235"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D73DA1C558874D57BCDD167499FB301A"
             {
             "Name" = "8:Stroller"
@@ -3590,7 +3638,7 @@
             "Target" = "8:_F47214FA72834D58BE4036CF0C8A3774"
             "Folder" = "8:_99142E00D32F45A6B3C13AF8D5310355"
             "WorkingFolder" = "8:_3897C7EA503E4FD3825A2128A962E75A"
-            "Icon" = "8:_59614CF53167430C91CC6B7521DEEB32"
+            "Icon" = "8:_2D86FE7641DD41B0BCAE3304E9FC5235"
             "Feature" = "8:"
             }
         }
