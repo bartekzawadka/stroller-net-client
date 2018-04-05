@@ -1,0 +1,23 @@
+﻿<mah:MetroWindow x:Class="Stroller.Views.ImageView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Stroller.Views"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:controls="clr-namespace:Stroller.Views.Controls"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"
+                 Title="Image preview" Height="450" Width="800"
+                 WindowStartupLocation="CenterScreen" WindowState="Maximized" 
+                 Icon="../Resources/Img/icon_white.png" Style="{StaticResource NWindow}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <controls:NImagePreview ChunksSource="{Binding ChunksSource, UpdateSourceTrigger=PropertyChanged}"></controls:NImagePreview>
+        <controls:NButton x:Name="TryClose" Icon="Close" IsAccented="True" Text="Close" Grid.Row="1" HorizontalAlignment="Center" MinWidth="100"></controls:NButton>
+    </Grid>
+</mah:MetroWindow>
+

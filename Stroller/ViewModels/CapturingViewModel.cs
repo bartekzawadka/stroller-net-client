@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using Caliburn.Micro;
@@ -16,6 +17,7 @@ namespace Stroller.ViewModels
     public class CapturingViewModel : ScreenBase
     {
         private readonly IStrollerControlService _strollerControlService = IoC.Get<IStrollerControlService>();
+        private readonly IStrollerImageService _strollerImageService = IoC.Get<IStrollerImageService>();
         private StrollerStatus _status = new StrollerStatus();
         private string _statusText = StrollerStatusType.Unknown;
         private Brush _statusForeground = Application.Current.Resources["GrayBrush2"] as Brush;
@@ -65,7 +67,7 @@ namespace Stroller.ViewModels
                 return;
             }
 
-            var imageStorageInfo = CapturingManager.Initialize();
+            var imageStorageInfo = _strollerImageService.Initialize();
 
             var progress = await ShowProgress("Capturing", "360 image acquisition pending...");
             progress.Minimum = 0.0;
@@ -76,7 +78,7 @@ namespace Stroller.ViewModels
 
             try
             {
-                processData = await _strollerControlService.Capture();
+                processData = await _strollerControlService.Capture(CancellationToken.None);
             }
             catch (Exception ex)
             {
@@ -96,7 +98,7 @@ namespace Stroller.ViewModels
                 if (exception != null)
                 {
                     StopProcessAndShowError("Capturing failed",
-                        "Error occured during image acquisition process: " + exception.Message, progress, imageStorageInfo.FullPath);
+                        "Error occured during image acquisition process: " + exception.Message, progress, imageStorageInfo.DirectoryName);
                     return;
                 }
 
@@ -107,28 +109,28 @@ namespace Stroller.ViewModels
                         await _strollerControlService.CancelCapturing(new CancellingInfo
                         {
                             Token = str.Token
-                        });
+                        }, CancellationToken.None);
                         StopProcessAndShowError("Operation cancelled",
-                            "360 image acquisition process has been cancelled by the user", progress, imageStorageInfo.FullPath);
+                            "360 image acquisition process has been cancelled by the user", progress, imageStorageInfo.DirectoryName);
                         return;
                     }
 
-                    processData = await _strollerControlService.SendToRotate(str);
+                    processData = await _strollerControlService.SendToRotate(str, CancellationToken.None);
                 }
                 catch (Exception ex)
                 {
                     StopProcessAndShowError("Capturing failed",
-                        "Error occured during image acquisition process: " + ex.Message, progress, imageStorageInfo.FullPath);
+                        "Error occured during image acquisition process: " + ex.Message, progress, imageStorageInfo.DirectoryName);
                     return;
                 }
 
                 progress.SetProgress(processData.Progress);
-                CapturingManager.AppendImage(bytes, imageStorageInfo.FullPath, index);
+                _strollerImageService.AppendImage(bytes, imageStorageInfo.FullPath, index);
 
                 if (processData.Status == AcquisitionStatusType.Finished)
                 {
-                    CapturingManager.SaveImage(imageStorageInfo, index + 1,
-                        CapturingManager.GetThumbnail(imageStorageInfo));
+                    _strollerImageService.SaveImage(imageStorageInfo, index + 1,
+                        _strollerImageService.GetThumbnail(imageStorageInfo));
 
                     await progress.CloseAsync();
 
@@ -147,9 +149,9 @@ namespace Stroller.ViewModels
         public async void RefreshStatus()
         {
             await ExecuteIntederminateProcess("Reading status", "Getting Stroller status. Please wait...",
-                async () =>
+                async token =>
                 {
-                    _status = await _strollerControlService.GetStatus();
+                    _status = await _strollerControlService.GetStatus(token);
                     SetColorForStatus();
                     NotifyOfPropertyChange(nameof(IsAcquisitionEnabled));
                 },
@@ -163,18 +165,17 @@ namespace Stroller.ViewModels
         public async void ReleaseDevice()
         {
             var dialogResult = await ShowConfirmation("Device busy",
-                "Releasing currently working device may impact result images. Do you want to continue anyway?", "Yes",
-                "No");
+                "Releasing currently working device may impact result images. Do you want to continue anyway?");
 
             if (dialogResult != MessageDialogResult.Affirmative)
                 return;
 
-            await ExecuteIntederminateProcess("Releasing device", "Releasing Stroller. Please wait...", async () =>
+            await ExecuteIntederminateProcess("Releasing device", "Releasing Stroller. Please wait...", async token =>
                 {
                     await _strollerControlService.CancelCapturing(new CancellingInfo
                     {
                         Force = true
-                    });
+                    }, token);
                 }, () => { RefreshStatus(); },
                 async exception =>
                 {
@@ -186,7 +187,7 @@ namespace Stroller.ViewModels
         {
             await progress.CloseAsync();
 
-            CapturingManager.RemoveDir(imagesPath);
+            _strollerImageService.RemoveDir(imagesPath);
 
             await ShowMessage(title,
                 message);
