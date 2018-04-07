@@ -100,16 +100,6 @@ namespace Stroller.ViewModels
         public void GoHome()
         {
             SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
-//            if (LastView != null)
-//            {
-//                SelectedMenuItem =
-//                    MenuItems.FirstOrDefault(x => x.Tag != null && (Type)x.Tag == LastView.GetType()) as
-//                        HamburgerMenuIconItem;
-//            }
-//            else
-//            {
-//                SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
-//            }
         }
 
         protected override void OnViewLoaded(object view)
