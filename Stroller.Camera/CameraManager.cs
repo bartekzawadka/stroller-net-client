@@ -95,7 +95,17 @@ namespace Stroller.Camera
             _callbackAction = callback;
         }
 
-        private static async void DeviceManager_OnEvent(string eventId, string deviceId, string itemId)
+        public static void ClearCameraImages()
+        {
+            if (_cameraDevice == null) return;
+
+            for (var i = 1; i <= _cameraDevice.Items.Count; i++)
+            {
+                _cameraDevice.Items.Remove(i);
+            }
+        }
+
+        private static void DeviceManager_OnEvent(string eventId, string deviceId, string itemId)
         {
             if (_cameraDevice != null && eventId == EventID.wiaEventItemCreated && _callbackAction != null)
             {
@@ -119,13 +129,11 @@ namespace Stroller.Camera
                             break;
                         }
 
-                        var image = (ImageFile)obj;
-                        var buff = (byte[])image.FileData.get_BinaryData();
-
-                        _cameraDevice.Items.Remove(i);
-
                         if (_callbackAction != null)
                         {
+                            var image = (ImageFile)obj;
+                            var buff = (byte[]) image.FileData.get_BinaryData();
+
                             ExecuteSynchedWithContext(() => { _callbackAction(buff, null); });
                         }
 

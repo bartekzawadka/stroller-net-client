@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Threading;
 using Autofac;
 using Caliburn.Micro;
 using Caliburn.Micro.Autofac;
@@ -7,6 +8,7 @@ using MahApps.Metro;
 using Stroller.Bll;
 using Stroller.Contracts.Interfaces;
 using Stroller.ViewModels;
+using Stroller.ViewModels.Main;
 
 namespace Stroller.Main
 {
@@ -44,6 +46,26 @@ namespace Stroller.Main
             builder.RegisterInstance(new StrollerSettingsService()).As<IStrollerSettingsService>();
             builder.RegisterInstance(new StrollerControlService()).As<IStrollerControlService>();
             builder.RegisterInstance(new StrollerImageService()).As<IStrollerImageService>();
+        }
+
+        protected override void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            ShowException(e.Exception);
+            e.Handled = true;
+        }
+
+        public static void ShowException(Exception ex)
+        {
+            Execute.OnUIThread(() =>
+            {
+                var e = ex;
+                if (!string.IsNullOrEmpty(ex.InnerException?.Message))
+                {
+                    e = ex.InnerException;
+                }
+
+                IoC.Get<IWindowManager>().ShowDialog(new ErrorViewModel(e));
+            });
         }
     }
 }
