@@ -132,6 +132,8 @@ namespace Stroller.ViewModels
                     _strollerImageService.SaveImage(imageStorageInfo, index + 1,
                         _strollerImageService.GetThumbnail(imageStorageInfo));
 
+                    CameraManager.ClearCameraImages();
+
                     await progress.CloseAsync();
 
                     await ShowMessage("Operation finished", "Image successfully acquired!");
