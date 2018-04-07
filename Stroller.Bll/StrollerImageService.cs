@@ -173,11 +173,11 @@ namespace Stroller.Bll
 
             Directory.CreateDirectory(tempPath);
 
-            var index = 1;
             foreach (var t in files)
             {
+                var fName = Path.GetFileNameWithoutExtension(t);
+                var index = int.Parse(fName) + 1;
                 File.Copy(t, Path.Combine(tempPath, index + ".jpg"));
-                index++;
             }
 
             using (ZipArchive newFile = ZipFile.Open(tempPath + ".zip", ZipArchiveMode.Create))
