@@ -58,5 +58,17 @@ namespace Stroller.Bll.Properties {
                 this["ImagesDir"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1280")]
+        public int OutputImageWidth {
+            get {
+                return ((int)(this["OutputImageWidth"]));
+            }
+            set {
+                this["OutputImageWidth"] = value;
+            }
+        }
     }
 }

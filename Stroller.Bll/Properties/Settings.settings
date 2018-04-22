@@ -11,5 +11,8 @@
     <Setting Name="ImagesDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\StrollerImages</Value>
     </Setting>
+    <Setting Name="OutputImageWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1280</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
