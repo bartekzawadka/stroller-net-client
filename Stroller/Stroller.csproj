@@ -130,6 +130,7 @@
     <Compile Include="Common\Converters\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Converters\ToUpperConverter.cs" />
     <Compile Include="Common\Events\ImageListItemEventArgs.cs" />
+    <Compile Include="Common\Events\SelectedImagesChangedEventArgs.cs" />
     <Compile Include="Main\CustomWindowsManager.cs" />
     <Compile Include="Main\IMain.cs" />
     <Compile Include="ViewModels\BrowseImagesViewModel.cs" />

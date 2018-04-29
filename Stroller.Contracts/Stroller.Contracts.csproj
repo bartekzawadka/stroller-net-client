@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\ActivationInfo.cs" />
     <Compile Include="Dto\CancellingInfo.cs" />
     <Compile Include="Dto\CapturingInfo.cs" />
     <Compile Include="Dto\CapturingProgressInfo.cs" />

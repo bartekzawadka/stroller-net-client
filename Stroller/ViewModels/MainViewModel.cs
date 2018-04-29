@@ -2,6 +2,7 @@
 using System.Linq;
 using MahApps.Metro.Controls;
 using MahApps.Metro.IconPacks;
+using Stroller.Contracts.Dto;
 using Stroller.Main;
 using Stroller.ViewModels.Common;
 
@@ -68,33 +69,59 @@ namespace Stroller.ViewModels
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.Camera},
                     Label = "Capturing",
-                    Tag = typeof(CapturingViewModel)
+                    Tag = new ActivationInfo
+                    {
+                        ViewModel = typeof(CapturingViewModel)
+                    }
                 },
                 new HamburgerMenuIconItem
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.ImageGallery},
                     Label = "Browse images",
-                    Tag = typeof(BrowseImagesViewModel)
+                    Tag = new ActivationInfo
+                    {
+                        ViewModel = typeof(BrowseImagesViewModel)
+                    }
+                },
+                new HamburgerMenuIconItem
+                {
+                    Icon = new PackIconModern {Kind = PackIconModernKind.Upload},
+                    Label = "Upload images",
+                    Tag = new ActivationInfo
+                    {
+                        ViewModel = typeof(BrowseImagesViewModel),
+                        Params = new object[] {true}
+                    }
                 },
                 new HamburgerMenuIconItem
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.Settings},
                     Label = "Capturing settings",
-                    Tag = typeof(CapturingSettingsViewModel)
+                    Tag = new ActivationInfo
+                    {
+                        ViewModel = typeof(CapturingSettingsViewModel)
+                    }
                 },
                 new HamburgerMenuIconItem
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.Connect},
                     Label = "Connection settings",
-                    Tag = typeof(ConnectionSettingsViewModel)
-                },
+                    Tag = new ActivationInfo
+                    {
+                        ViewModel = typeof(ConnectionSettingsViewModel)
+                    }
+                }
             };
         }
 
         public void UpdateView()
         {
             if (SelectedMenuItem != null)
-                CurrentContent = Activator.CreateInstance((Type) SelectedMenuItem.Tag) as ScreenBase;
+            {
+                var activationInfo = (ActivationInfo) SelectedMenuItem.Tag;
+                CurrentContent =
+                    Activator.CreateInstance((Type)activationInfo.ViewModel, activationInfo.Params) as ScreenBase;
+            }
         }
 
         public void GoHome()
@@ -104,7 +131,7 @@ namespace Stroller.ViewModels
 
         protected override void OnViewLoaded(object view)
         {
-            LastView = MenuItems[0].Tag as ScreenBase;
+            LastView = ((ActivationInfo)MenuItems[0].Tag).ViewModel as ScreenBase;
             SelectedMenuItem = MenuItems[0] as HamburgerMenuIconItem;
         }
     }

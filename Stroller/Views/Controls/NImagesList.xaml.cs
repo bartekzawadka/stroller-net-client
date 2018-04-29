@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Stroller.Common.Events;
@@ -11,11 +12,16 @@ namespace Stroller.Views.Controls
     /// </summary>
     public partial class NImagesList
     {
+        private List<ImageListItem> _selectedImagesCollection = new List<ImageListItem>();
+
         public static DependencyProperty ItemsPerRowProperty =
             DependencyProperty.Register("ItemsPerRow", typeof(int), typeof(NImagesList));
 
         public static DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable<ImageListItem>), typeof(NImagesList));
+
+        public static DependencyProperty ImageSelectableProperty =
+            DependencyProperty.Register("ImageSelectable", typeof(bool), typeof(NImagesList));
 
         public int ItemsPerRow
         {
@@ -37,10 +43,17 @@ namespace Stroller.Views.Controls
             }
         }
 
+        public bool ImageSelectable
+        {
+            get => (bool) GetValue(ImageSelectableProperty);
+            set => SetValue(ImageSelectableProperty, value);
+        }
+
         public event RoutedEventHandler DeleteClicked;
         public event RoutedEventHandler DownloadJsonClicked;
         public event RoutedEventHandler DownloadZipClicked;
-        public event RoutedEventHandler ItemSelected;
+        public event RoutedEventHandler ItemClicked;
+        public event RoutedEventHandler SelectedImagesChanged;
 
         public NImagesList()
         {
@@ -110,12 +123,14 @@ namespace Stroller.Views.Controls
                     {
                         BackgroundImageData = rows[i][j].Thumbnail,
                         Text = rows[i][j].CreatedAtText,
-                        DataContext = rows[i][j]
+                        DataContext = rows[i][j],
+                        IsSelectable = ImageSelectable
                     };
                     image.DeleteClicked += Image_DeleteClicked;
                     image.DownloadJsonClicked += Image_DownloadJsonClicked;
                     image.DownloadZipClicked += Image_DownloadZipClicked;
-                    image.ItemSelected += Image_ItemSelected;
+                    image.ItemClicked += ImageItemClicked;
+                    image.ItemSelectionChanged += Image_ItemSelectionChanged;
                     image.SetValue(Grid.RowProperty, i);
                     image.SetValue(Grid.ColumnProperty, j);
                     MainGrid.Children.Add(image);
@@ -123,9 +138,37 @@ namespace Stroller.Views.Controls
             }
         }
 
-        private void Image_ItemSelected(ImageListItem data)
+        private void Image_ItemSelectionChanged(ImageListItem data, bool state)
         {
-            ItemSelected?.Invoke(this, new ImageListItemEventArgs
+            if (data == null)
+                return;
+
+            if (state)
+            {
+                if (_selectedImagesCollection.Any(x => string.Equals(x.DirectoryName, data.DirectoryName))) return;
+
+                _selectedImagesCollection.Add(data);
+                SelectedImagesChanged?.Invoke(this, new SelectedImagesChangedEventArgs
+                {
+                    SelectedItems = _selectedImagesCollection
+                });
+            }
+            else
+            {
+                if (!_selectedImagesCollection.Any(x => string.Equals(x.DirectoryName, data.DirectoryName))) return;
+
+                _selectedImagesCollection = _selectedImagesCollection
+                    .Where(x => !string.Equals(x.DirectoryName, data.DirectoryName)).ToList();
+                SelectedImagesChanged?.Invoke(this, new SelectedImagesChangedEventArgs
+                {
+                    SelectedItems = _selectedImagesCollection
+                });
+            }
+        }
+
+        private void ImageItemClicked(ImageListItem data)
+        {
+            ItemClicked?.Invoke(this, new ImageListItemEventArgs
             {
                 ImageListItem = data
             });
