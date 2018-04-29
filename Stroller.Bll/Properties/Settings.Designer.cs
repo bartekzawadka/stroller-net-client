@@ -58,5 +58,77 @@ namespace Stroller.Bll.Properties {
                 this["ImagesDir"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("host")]
+        public string UploadImagesTargetHost {
+            get {
+                return ((string)(this["UploadImagesTargetHost"]));
+            }
+            set {
+                this["UploadImagesTargetHost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("user")]
+        public string UploadImagesTargetUsername {
+            get {
+                return ((string)(this["UploadImagesTargetUsername"]));
+            }
+            set {
+                this["UploadImagesTargetUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("password")]
+        public string UploadImagesTargetPassword {
+            get {
+                return ((string)(this["UploadImagesTargetPassword"]));
+            }
+            set {
+                this["UploadImagesTargetPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("22")]
+        public int UploadImagesTargetPort {
+            get {
+                return ((int)(this["UploadImagesTargetPort"]));
+            }
+            set {
+                this["UploadImagesTargetPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UploadImagesTargetIsUnix {
+            get {
+                return ((bool)(this["UploadImagesTargetIsUnix"]));
+            }
+            set {
+                this["UploadImagesTargetIsUnix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("wp-content/uploads/threesixty")]
+        public string UploadImagesTargetDestRootDir {
+            get {
+                return ((string)(this["UploadImagesTargetDestRootDir"]));
+            }
+            set {
+                this["UploadImagesTargetDestRootDir"] = value;
+            }
+        }
     }
 }

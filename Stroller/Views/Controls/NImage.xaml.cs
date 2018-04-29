@@ -11,11 +11,16 @@ namespace Stroller.Views.Controls
     /// </summary>
     public partial class NImage
     {
+        private bool _isSelected;
+
         public static DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(NImage));
 
         public static DependencyProperty BackgroundImageDataProperty =
             DependencyProperty.Register("BackgroundImageData", typeof(byte[]), typeof(NImage));
+
+        public static DependencyProperty IsSelectableProperty =
+            DependencyProperty.Register("IsSelectable", typeof(bool), typeof(NImage));
 
         public string Text
         {
@@ -29,13 +34,21 @@ namespace Stroller.Views.Controls
             set => SetValue(BackgroundImageDataProperty, value);
         }
 
+        public bool IsSelectable
+        {
+            get => (bool) GetValue(IsSelectableProperty);
+            set => SetValue(IsSelectableProperty, value);
+        }
+
         public delegate void OnDeleteClicked(ImageListItem data);
 
         public delegate void OnDownloadZipClicked(ImageListItem data);
 
         public delegate void OnDownloadJsonClicked(ImageListItem data);
 
-        public delegate void OnItemSelected(ImageListItem data);
+        public delegate void OnItemClicked(ImageListItem data);
+
+        public delegate void OnItemSelectionChanged(ImageListItem data, bool state);
 
         public event OnDeleteClicked DeleteClicked;
 
@@ -43,7 +56,10 @@ namespace Stroller.Views.Controls
 
         public event OnDownloadJsonClicked DownloadJsonClicked;
 
-        public event OnItemSelected ItemSelected;
+        public event OnItemClicked ItemClicked;
+
+        public event OnItemSelectionChanged ItemSelectionChanged;
+
 
         public NImage()
         {
@@ -72,6 +88,11 @@ namespace Stroller.Views.Controls
             
 
             BackgroundImageBrush.ImageSource = image;
+
+            if (IsSelectable)
+            {
+                OperationsPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void BtnDelete_OnClick(object sender, RoutedEventArgs e)
@@ -91,7 +112,19 @@ namespace Stroller.Views.Controls
 
         private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ItemSelected?.Invoke(DataContext as ImageListItem);
+            if (!IsSelectable)
+                ItemClicked?.Invoke(DataContext as ImageListItem);
+            else
+            {
+                ToggleSelection();
+                ItemSelectionChanged?.Invoke(DataContext as ImageListItem, _isSelected);
+            }
+        }
+
+        private void ToggleSelection()
+        {
+            _isSelected = !_isSelected;
+            CurrentImageItem.BorderThickness = _isSelected ? new Thickness(4) : new Thickness(0);
         }
     }
 }

@@ -58,7 +58,9 @@
                 </DataTemplate>
             </mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
             <mah:HamburgerMenu.Content>
-                <ContentControl cal:View.Model="{Binding CurrentContent, Mode=TwoWay}"></ContentControl>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <ContentControl cal:View.Model="{Binding CurrentContent, Mode=TwoWay}"></ContentControl>
+                </ScrollViewer>
             </mah:HamburgerMenu.Content>
         </mah:HamburgerMenu>
     </Grid>

@@ -11,5 +11,23 @@
     <Setting Name="ImagesDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\StrollerImages</Value>
     </Setting>
+    <Setting Name="UploadImagesTargetHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">host</Value>
+    </Setting>
+    <Setting Name="UploadImagesTargetUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">user</Value>
+    </Setting>
+    <Setting Name="UploadImagesTargetPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">password</Value>
+    </Setting>
+    <Setting Name="UploadImagesTargetPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">22</Value>
+    </Setting>
+    <Setting Name="UploadImagesTargetIsUnix" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UploadImagesTargetDestRootDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">wp-content/uploads/threesixty</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
