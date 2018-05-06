@@ -7,7 +7,7 @@ using Stroller.Contracts.Interfaces;
 using Stroller.Main;
 using Stroller.ViewModels.Common;
 
-namespace Stroller.ViewModels
+namespace Stroller.ViewModels.Settings
 {
     public class CapturingSettingsViewModel : DetailsScreen<StrollerSettings>
     {
@@ -40,7 +40,7 @@ namespace Stroller.ViewModels
 
         public bool IsSaveEnabled => !string.IsNullOrEmpty(Camera);
 
-        public CapturingSettingsViewModel() : base(IoC.Get<IMain>() as ScreenBase)
+        public CapturingSettingsViewModel(ScreenBase parent) : base(parent)
         {
             Context = new StrollerSettings();
         }

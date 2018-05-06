@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MahApps.Metro.Controls;
 using MahApps.Metro.IconPacks;
 using Stroller.Contracts.Dto;
 using Stroller.Main;
 using Stroller.ViewModels.Common;
-using Stroller.ViewModels.Settings;
 
-namespace Stroller.ViewModels
+namespace Stroller.ViewModels.Settings
 {
-    public class MainViewModel : ScreenBase, IMain
+    public class SettingsViewModel : ScreenBase
     {
         private HamburgerMenuItemCollection _menuItems;
         private HamburgerMenuIconItem _selectedMenuItem;
         private ScreenBase _currentContent;
-        private ScreenBase _lastView;
+        private readonly List<ScreenBase> _settingsPanels = new List<ScreenBase>();
 
         public ScreenBase CurrentContent
         {
@@ -22,7 +22,6 @@ namespace Stroller.ViewModels
             set
             {
                 if (Equals(value, _currentContent)) return;
-                LastView = _currentContent;
                 _currentContent = value;
                 NotifyOfPropertyChange();
             }
@@ -51,60 +50,50 @@ namespace Stroller.ViewModels
             }
         }
 
-        public ScreenBase LastView
-        {
-            get => _lastView;
-            set
-            {
-                if (Equals(value, _lastView)) return;
-                _lastView = value;
-                NotifyOfPropertyChange();
-            }
-        }
-
-        public MainViewModel() : base(null)
+        public SettingsViewModel() : base(null)
         {
             MenuItems = new HamburgerMenuItemCollection
             {
+                new HamburgerMenuIconItem
+                {
+                    Icon = new PackIconModern {Kind = PackIconModernKind.Settings},
+                    Label = "General",
+                    Tag = new ActivationInfo
+                    {
+                        ViewModel = typeof(GeneralSettingsViewModel),
+                        Params = new object[]{this}
+                    }
+                },
                 new HamburgerMenuIconItem
                 {
                     Icon = new PackIconModern {Kind = PackIconModernKind.Camera},
                     Label = "Capturing",
                     Tag = new ActivationInfo
                     {
-                        ViewModel = typeof(CapturingViewModel)
+                        ViewModel = typeof(CapturingSettingsViewModel),
+                        Params = new object[] {this}
                     }
                 },
                 new HamburgerMenuIconItem
                 {
-                    Icon = new PackIconModern {Kind = PackIconModernKind.ImageGallery},
-                    Label = "Browse images",
+                    Icon = new PackIconModern {Kind = PackIconModernKind.Connect},
+                    Label = "Stroller connection",
                     Tag = new ActivationInfo
                     {
-                        ViewModel = typeof(BrowseImagesViewModel),
-                        Params = new object[] {false}
+                        ViewModel = typeof(ConnectionSettingsViewModel),
+                        Params = new object[] {this}
                     }
                 },
                 new HamburgerMenuIconItem
                 {
-                    Icon = new PackIconModern {Kind = PackIconModernKind.Upload},
-                    Label = "Upload images",
+                    Icon = new PackIconModern {Kind = PackIconModernKind.CloudUpload},
+                    Label = "Image uploads",
                     Tag = new ActivationInfo
                     {
-                        ViewModel = typeof(BrowseImagesViewModel),
-                        Params = new object[] {true}
+                        ViewModel = typeof(ImageUploadsSettingsViewModel),
+                        Params = new object[] {this}
                     }
                 },
-                new HamburgerMenuIconItem
-                {
-                    Icon = new PackIconModern {Kind = PackIconModernKind.Settings},
-                    Label = "Settings",
-                    Tag = new ActivationInfo
-                    {
-                        ViewModel = typeof(SettingsViewModel),
-                        IsDialog = true
-                    }
-                }
             };
         }
 
@@ -112,9 +101,12 @@ namespace Stroller.ViewModels
         {
             if (SelectedMenuItem != null)
             {
-                var activationInfo = (ActivationInfo) SelectedMenuItem.Tag;
+                var activationInfo = (ActivationInfo)SelectedMenuItem.Tag;
+
                 var vm =
                     Activator.CreateInstance((Type)activationInfo.ViewModel, activationInfo.Params) as ScreenBase;
+
+                AddToPanelStorage(vm);
 
                 if (!activationInfo.IsDialog)
                     CurrentContent = vm;
@@ -123,15 +115,24 @@ namespace Stroller.ViewModels
             }
         }
 
-        public void GoHome()
+        public void SaveAndClose()
         {
-            SelectedMenuItem = MenuItems.First() as HamburgerMenuIconItem;
+            foreach (var settingsPanel in _settingsPanels)
+            {
+                if (settingsPanel is ISettings settings)
+                    settings.Save();
+            }
+
+            TryClose();
         }
 
-        protected override void OnViewLoaded(object view)
+        private void AddToPanelStorage(ScreenBase item)
         {
-            LastView = ((ActivationInfo)MenuItems[0].Tag).ViewModel as ScreenBase;
-            SelectedMenuItem = MenuItems[0] as HamburgerMenuIconItem;
+            if (item == null)
+                return;
+
+            if (_settingsPanels.Any(x => item.GetType() == x.GetType())) return;
+            _settingsPanels.Add(item);
         }
     }
 }

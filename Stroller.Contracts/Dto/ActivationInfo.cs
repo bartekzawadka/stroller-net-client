@@ -7,5 +7,7 @@ namespace Stroller.Contracts.Dto
         public object ViewModel { get; set; }
 
         public object[] Params { get; set; }
+
+        public bool IsDialog { get; set; }
     }
 }
