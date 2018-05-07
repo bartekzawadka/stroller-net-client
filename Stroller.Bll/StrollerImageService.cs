@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
@@ -9,9 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using NLog;
 using Renci.SshNet;
+using Stroller.Bll.Utils;
 using Stroller.Contracts.Dto;
 using Stroller.Contracts.Interfaces;
 using Stroller.Contracts.Serializable;
+using Image = Stroller.Contracts.Serializable.Image;
 
 namespace Stroller.Bll
 {
@@ -37,9 +40,25 @@ namespace Stroller.Bll
 
         public void AppendImage(byte[] imageData, string dir, int index)
         {
-            using (var fs = File.Open(Path.Combine(dir, index + ".jpg"), FileMode.OpenOrCreate, FileAccess.Write))
+            using (var imgMs = new MemoryStream(imageData))
             {
-                fs.Write(imageData, 0, imageData.Length);
+                using (var sourceImage = new Bitmap(imgMs))
+                {
+                    using (var destImage =
+                        ImageUtils.ResizeImage(sourceImage, Properties.Settings.Default.OutputImageWidth))
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            destImage.Save(ms, ImageFormat.Jpeg);
+                            var buff = ms.ToArray();
+                            using (var fs = File.Open(Path.Combine(dir, index + ".jpg"), FileMode.OpenOrCreate,
+                                FileAccess.Write))
+                            {
+                                fs.Write(buff, 0, buff.Length);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -204,7 +223,7 @@ namespace Stroller.Bll
                 fs.Read(buff, 0, buff.Length);
             }
 
-            File.Delete(tempPath+".zip");
+            File.Delete(tempPath + ".zip");
 
             return buff;
         }
