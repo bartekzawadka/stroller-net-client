@@ -133,16 +133,21 @@
     <Compile Include="Common\Events\SelectedImagesChangedEventArgs.cs" />
     <Compile Include="Main\CustomWindowsManager.cs" />
     <Compile Include="Main\IMain.cs" />
+    <Compile Include="Main\ISettings.cs" />
     <Compile Include="ViewModels\BrowseImagesViewModel.cs" />
     <Compile Include="ViewModels\CapturingViewModel.cs" />
-    <Compile Include="ViewModels\CapturingSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Common\MenuScreen.cs" />
+    <Compile Include="ViewModels\Settings\CapturingSettingsViewModel.cs" />
     <Compile Include="ViewModels\Common\DetailsScreen.cs" />
     <Compile Include="ViewModels\Common\ListScreen.cs" />
     <Compile Include="ViewModels\Common\ScreenBase.cs" />
-    <Compile Include="ViewModels\ConnectionSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Settings\ConnectionSettingsViewModel.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Main\ErrorViewModel.cs" />
+    <Compile Include="ViewModels\Settings\GeneralSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Settings\ImageUploadsSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
     <Compile Include="Views\Controls\NButton.xaml.cs" />
     <Compile Include="Views\Controls\NImage.xaml.cs">
       <DependentUpon>NImage.xaml</DependentUpon>
@@ -218,7 +223,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CapturingSettingsView.xaml">
+    <Page Include="Views\Settings\CapturingSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -226,7 +231,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ConnectionSettingsView.xaml">
+    <Page Include="Views\Settings\ConnectionSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -263,6 +268,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SaveAsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\GeneralSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\ImageUploadsSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
