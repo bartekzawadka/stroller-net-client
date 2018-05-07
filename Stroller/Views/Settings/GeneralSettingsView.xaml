@@ -10,6 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 <Grid.ColumnDefinitions>
@@ -25,6 +26,14 @@
                  MinWidth="600"
                  BorderThickness="0 0 0 1"
                  Text="{Binding ImagesDir}"
+                 SnapsToDevicePixels="True"></TextBox>
+        <TextBox Grid.Column="0" Grid.Row="1"
+                 mah:TextBoxHelper.UseFloatingWatermark="True"
+                 mah:TextBoxHelper.Watermark="Result 360 photo chunk-image size"
+                 Margin="10, 5, 10, 5"
+                 MinWidth="600"
+                 BorderThickness="0 0 0 1"
+                 Text="{Binding OutputImageSize}"
                  SnapsToDevicePixels="True"></TextBox>
         <controls:NButton Grid.Column="1" Grid.Row="0" x:Name="BrowseDir" Icon="FolderOpen" IsAccented="False" Text="Browse..."></controls:NButton>
     </Grid>

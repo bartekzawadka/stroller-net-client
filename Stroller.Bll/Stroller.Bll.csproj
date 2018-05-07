@@ -66,6 +66,7 @@
     <Compile Include="StrollerService.cs" />
     <Compile Include="StrollerSettingsService.cs" />
     <Compile Include="StrollerStatusType.cs" />
+    <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="XmlFileSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
