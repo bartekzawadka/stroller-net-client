@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading;
 using Caliburn.Micro;
 using Stroller.Contracts.Dto;
 using Stroller.Contracts.Interfaces;
 using Stroller.Main;
 using Stroller.ViewModels.Common;
 
-namespace Stroller.ViewModels
+namespace Stroller.ViewModels.Settings
 {
-    public class ConnectionSettingsViewModel : DetailsScreen<ConnectionSettingsInfo>
+    public class ConnectionSettingsViewModel : DetailsScreen<ConnectionSettingsInfo>, ISettings
     {
         private readonly IStrollerControlService _strollerControlService = IoC.Get<IStrollerControlService>();
 
-        public ConnectionSettingsViewModel() : base(IoC.Get<IMain>() as ScreenBase)
+        public ConnectionSettingsViewModel(ScreenBase parent) : base(parent)
         {
             Load();
         }
@@ -26,21 +25,32 @@ namespace Stroller.ViewModels
                 IpAddress = Bll.Properties.Settings.Default.IpAddress,
                 Port = Bll.Properties.Settings.Default.Port.ToString()
             };
+
         }
 
-        public void Save()
+        public async void Save()
         {
-            Save(true);
+            var msg = Validate();
+            if (!string.IsNullOrEmpty(msg.Value))
+            {
+                await ShowMessage(msg.Key, msg.Value);
+                return;
+            }
+
+            Bll.Properties.Settings.Default.IpAddress = Context.IpAddress;
+            Bll.Properties.Settings.Default.Port = int.Parse(Context.Port);
+
+            Bll.Properties.Settings.Default.Save();
         }
 
-        public async void TestConnection()
+        public async void TestStrollerConnection()
         {
             var lastIp = Bll.Properties.Settings.Default.IpAddress;
             var lastPort = Bll.Properties.Settings.Default.Port;
 
-            Save(false);
+            Save();
 
-            await ExecuteIntederminateProcess("Checing connectivity",
+            await ExecuteIntederminateProcess("Checking connectivity",
                 "Tesing connection with " + Context.IpAddress + ". Please wait...",
                 async (token) => { await _strollerControlService.GetStatus(token); },
                 async () =>
@@ -57,29 +67,9 @@ namespace Stroller.ViewModels
             Context.IpAddress = lastIp;
             Context.Port = lastPort.ToString();
 
-            Save(false);
+            Save();
 
             NotifyOfPropertyChange(nameof(Context));
-        }
-
-        private async void Save(bool close)
-        {
-            var msg = Validate();
-            if (!string.IsNullOrEmpty(msg.Value))
-            {
-                await ShowMessage(msg.Key, msg.Value);
-                return;
-            }
-
-            Bll.Properties.Settings.Default.IpAddress = Context.IpAddress;
-            Bll.Properties.Settings.Default.Port = int.Parse(Context.Port);
-            Bll.Properties.Settings.Default.Save();
-
-            if (close)
-            {
-                TryClose();
-                IoC.Get<IMain>().GoHome();
-            }
         }
 
         private KeyValuePair<string, string> Validate()

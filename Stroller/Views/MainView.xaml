@@ -4,8 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:controls="clr-namespace:Stroller.Views.Controls"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         Title="Stroller" Height="450" Width="800"
@@ -51,14 +49,16 @@
                            ItemsSource="{Binding MenuItems}"
                            SelectedItem="{Binding SelectedMenuItem, Mode=TwoWay}"
                            SelectedIndex="0"
-                           IsPaneOpen="True">
+                           IsPaneOpen="True" cal:Message.Attach="[Event ItemClick] = [Action OpenDialogItem($eventArgs);]" >
             <mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
                 <DataTemplate>
                     <Label Content="MENU" VerticalAlignment="Center" Foreground="{StaticResource WhiteColorBrush}" FontSize="16"></Label>
                 </DataTemplate>
             </mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
             <mah:HamburgerMenu.Content>
-                <ContentControl cal:View.Model="{Binding CurrentContent, Mode=TwoWay}"></ContentControl>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <ContentControl cal:View.Model="{Binding CurrentContent, Mode=TwoWay}"></ContentControl>
+                </ScrollViewer>
             </mah:HamburgerMenu.Content>
         </mah:HamburgerMenu>
     </Grid>

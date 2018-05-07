@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NLog;
+using Renci.SshNet;
 using Stroller.Bll.Utils;
 using Stroller.Contracts.Dto;
 using Stroller.Contracts.Interfaces;
@@ -15,6 +20,8 @@ namespace Stroller.Bll
 {
     public class StrollerImageService : IStrollerImageService
     {
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public ImageStorageInfo Initialize()
         {
             var storageInfo = new ImageStorageInfo();
@@ -235,6 +242,103 @@ namespace Stroller.Bll
                     yield return buff;
                 }
             }
+        }
+
+        public Task UploadImagesToServer(List<string> dirName, IProgress<double> progressHandler)
+        {
+            var errorList = new List<string>();
+
+            return Task.Factory.StartNew(() =>
+            {
+
+                using (var sftp = new SftpClient(Properties.Settings.Default.UploadImagesTargetHost,
+                    Properties.Settings.Default.UploadImagesTargetPort,
+                    Properties.Settings.Default.UploadImagesTargetUsername,
+                    Properties.Settings.Default.UploadImagesTargetPassword))
+                {
+                    sftp.Connect();
+                    sftp.ConnectionInfo.Encoding = Encoding.Unicode;
+
+                    var numberOfProcessedFiles = 0;
+                    var totalFiles = 0;
+
+                    foreach (var dir in dirName)
+                    {
+                        totalFiles += Directory.GetFiles(Path.Combine(Properties.Settings.Default.ImagesDir, dir), "*.jpg").Length;
+                    }
+
+                    foreach (var dir in dirName)
+                    {
+                        try
+                        {
+                            var directoryName = Path.GetFileName(dir);
+
+                            if (CheckIfRemoteDirectoryExists(sftp, Properties.Settings.Default.UploadImagesTargetDestRootDir, directoryName))
+                            {
+                                errorList.Add("Unable to upload dir " + directoryName +
+                                              " to remote resource. Destination directory already exists");
+                                break;
+                            }
+
+                            sftp.ChangeDirectory(Properties.Settings.Default.UploadImagesTargetDestRootDir);
+                            sftp.CreateDirectory(directoryName);
+
+                            foreach (var file in Directory.GetFiles(Path.Combine(Properties.Settings.Default.ImagesDir, dir), "*.jpg"))
+                            {
+                                using (var fs = File.Open(file, FileMode.Open, FileAccess.Read))
+                                {
+                                    var path = Path.Combine(directoryName, Path.GetFileName(file));
+                                    if (Properties.Settings.Default.UploadImagesTargetIsUnix)
+                                    {
+                                        path = path.Replace("\\", "/");
+                                    }
+
+                                    sftp.UploadFile(fs, path);
+                                }
+
+                                numberOfProcessedFiles++;
+                                progressHandler.Report(numberOfProcessedFiles * 100.0 / totalFiles);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            var exType = ex.GetType();
+                            _logger.Error(ex);
+                            errorList.Add(ex.Message);
+                        }
+                    }
+
+                    sftp.Disconnect();
+                }
+
+                if (!errorList.Any()) return;
+                var msg = "";
+                var lastError = errorList.Last();
+                foreach (var error in errorList)
+                {
+                    msg += error;
+                    if (error != lastError)
+                    {
+                        msg += Environment.NewLine;
+                    }
+                }
+
+                throw new Exception(msg);
+            });
+        }
+
+        /// <summary>
+        /// Checks if Remote folder contains the given file name
+        /// </summary>
+        private bool CheckIfRemoteDirectoryExists(SftpClient sftpClient, string remoteRootFolderName, string remoteFolderName)
+        {
+            var isFileExists = sftpClient
+                .ListDirectory(remoteRootFolderName)
+                .Any(
+                    f => f.IsDirectory &&
+                         string.Equals(f.Name, remoteFolderName, StringComparison.CurrentCultureIgnoreCase)
+                );
+            return isFileExists;
         }
     }
 }

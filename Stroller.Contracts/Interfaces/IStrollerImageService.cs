@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Stroller.Contracts.Dto;
 using Stroller.Contracts.Serializable;
 
@@ -23,5 +25,7 @@ namespace Stroller.Contracts.Interfaces
         byte[] GetImageZip(string dirName);
 
         IEnumerable<byte[]> GetImageBytes(string dirName);
+
+        Task UploadImagesToServer(List<string> dirName, IProgress<double> progressHandler);
     }
 }

@@ -45,12 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\ActivationInfo.cs" />
     <Compile Include="Dto\CancellingInfo.cs" />
     <Compile Include="Dto\CapturingInfo.cs" />
     <Compile Include="Dto\CapturingProgressInfo.cs" />
     <Compile Include="Dto\ConnectionSettingsInfo.cs" />
     <Compile Include="Dto\ImageListItem.cs" />
     <Compile Include="Dto\ImageStorageInfo.cs" />
+    <Compile Include="Dto\ImageUploadsSettingsInfo.cs" />
     <Compile Include="Dto\NameValuePair.cs" />
     <Compile Include="Dto\SendToRotateInfo.cs" />
     <Compile Include="Dto\StrollerConnection.cs" />

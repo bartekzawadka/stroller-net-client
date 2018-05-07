@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Caliburn.Micro;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -14,8 +16,10 @@ namespace Stroller.ViewModels
 {
     public class BrowseImagesViewModel : ListScreen<ImageListItem>
     {
+        public bool IsImagesUploadMode { get; }
         private readonly IStrollerImageService _strollerImageService = IoC.Get<IStrollerImageService>();
         private IEnumerable<ImageListItem> _imagesList;
+        private IEnumerable<ImageListItem> _selectedImages;
 
         public IEnumerable<ImageListItem> ImagesList
         {
@@ -28,8 +32,11 @@ namespace Stroller.ViewModels
             }
         }
 
-        public BrowseImagesViewModel() : base(IoC.Get<IMain>() as ScreenBase)
+        public bool CanUpload => _selectedImages?.Count() > 0;
+
+        public BrowseImagesViewModel(bool isImagesUploadMode = false) : base(IoC.Get<IMain>() as ScreenBase)
         {
+            IsImagesUploadMode = isImagesUploadMode;
         }
 
         protected override void OnViewLoaded(object view)
@@ -103,7 +110,41 @@ namespace Stroller.ViewModels
 
         public void OpenItem(ImageListItemEventArgs e)
         {
-            ShowDialog(new ImageViewModel(e.ImageListItem.DirectoryName));
+            if (!IsImagesUploadMode)
+                ShowDialog(new ImageViewModel(e.ImageListItem.DirectoryName));
+        }
+
+        public void SelectedImagesChanged(SelectedImagesChangedEventArgs e)
+        {
+            _selectedImages = e.SelectedItems;
+            NotifyOfPropertyChange(nameof(CanUpload));
+        }
+
+        public async void UploadImages()
+        {
+            var progress = await ShowProgress("Uploading images", "Selected images upload to server in progress...");
+            progress.Minimum = 0.0;
+            progress.Maximum = 100.0;
+
+            var reporter = new Progress<double>();
+
+            reporter.ProgressChanged += (sender, d) => { progress.SetProgress(d); };
+
+            try
+            {
+                await _strollerImageService.UploadImagesToServer(_selectedImages.Select(x => x.DirectoryName).ToList(),
+                    reporter);
+                await progress.CloseAsync();
+                await ShowMessage("Upload completed", "Images successfully uploaded");
+            }
+            catch (Exception ex)
+            {
+                await progress.CloseAsync();
+                await ShowMessage("Upload failed",
+                    "Images upload to server could not be completed" + Environment.NewLine + ex.Message);
+            }
+
+            LoadData();
         }
     }
 }
