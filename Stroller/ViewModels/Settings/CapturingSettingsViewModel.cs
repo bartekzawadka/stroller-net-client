@@ -7,7 +7,7 @@ using Stroller.Contracts.Interfaces;
 using Stroller.Main;
 using Stroller.ViewModels.Common;
 
-namespace Stroller.ViewModels
+namespace Stroller.ViewModels.Settings
 {
     public class CapturingSettingsViewModel : DetailsScreen<StrollerSettings>
     {
@@ -40,7 +40,7 @@ namespace Stroller.ViewModels
 
         public bool IsSaveEnabled => !string.IsNullOrEmpty(Camera);
 
-        public CapturingSettingsViewModel() : base(IoC.Get<IMain>() as ScreenBase)
+        public CapturingSettingsViewModel(ScreenBase parent) : base(parent)
         {
             Context = new StrollerSettings();
         }
@@ -66,11 +66,13 @@ namespace Stroller.ViewModels
                 CameraManager.SetCurrentCamera(Camera);
             }
 
-            await ExecuteIntederminateProcess("Saving settings", "Sending settings to Stroller. Please wait...", async token =>
-            {
-                await _strollerSettingsService.SaveSettings(Context, token);
-                CapturingConfiguration.Settings = Context;
-            }, () => { IoC.Get<IMain>().GoHome(); }, async ex => { await ShowMessage("Opration failed", ex.Message); });
+            await ExecuteIntederminateProcess("Saving settings", "Sending settings to Stroller. Please wait...",
+                async token =>
+                {
+                    await _strollerSettingsService.SaveSettings(Context, token);
+                    CapturingConfiguration.Settings = Context;
+                }, async () => { await ShowMessage("Information", "Configuration successfully updated"); },
+                async ex => { await ShowMessage("Opration failed", ex.Message); });
         }
 
         public void LargeImageModeChecked()
