@@ -9,46 +9,9 @@ using Stroller.ViewModels.Common;
 
 namespace Stroller.ViewModels.Settings
 {
-    public class SettingsViewModel : ScreenBase
+    public class SettingsViewModel : MenuScreen
     {
-        private HamburgerMenuItemCollection _menuItems;
-        private HamburgerMenuIconItem _selectedMenuItem;
-        private ScreenBase _currentContent;
         private readonly List<ScreenBase> _settingsPanels = new List<ScreenBase>();
-
-        public ScreenBase CurrentContent
-        {
-            get => _currentContent;
-            set
-            {
-                if (Equals(value, _currentContent)) return;
-                _currentContent = value;
-                NotifyOfPropertyChange();
-            }
-        }
-
-        public HamburgerMenuItemCollection MenuItems
-        {
-            get => _menuItems;
-            set
-            {
-                if (Equals(value, _menuItems)) return;
-                _menuItems = value;
-                NotifyOfPropertyChange();
-            }
-        }
-
-        public HamburgerMenuIconItem SelectedMenuItem
-        {
-            get => _selectedMenuItem;
-            set
-            {
-                if (Equals(value, _selectedMenuItem)) return;
-                _selectedMenuItem = value;
-                NotifyOfPropertyChange();
-                UpdateView();
-            }
-        }
 
         public SettingsViewModel() : base(null)
         {
@@ -97,22 +60,9 @@ namespace Stroller.ViewModels.Settings
             };
         }
 
-        public void UpdateView()
+        protected override void OnItemViewModelCreated(ScreenBase vm)
         {
-            if (SelectedMenuItem != null)
-            {
-                var activationInfo = (ActivationInfo)SelectedMenuItem.Tag;
-
-                var vm =
-                    Activator.CreateInstance((Type)activationInfo.ViewModel, activationInfo.Params) as ScreenBase;
-
-                AddToPanelStorage(vm);
-
-                if (!activationInfo.IsDialog)
-                    CurrentContent = vm;
-                else
-                    ShowDialog(vm);
-            }
+            AddToPanelStorage(vm);
         }
 
         public void SaveAndClose()

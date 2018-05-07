@@ -66,11 +66,13 @@ namespace Stroller.ViewModels.Settings
                 CameraManager.SetCurrentCamera(Camera);
             }
 
-            await ExecuteIntederminateProcess("Saving settings", "Sending settings to Stroller. Please wait...", async token =>
-            {
-                await _strollerSettingsService.SaveSettings(Context, token);
-                CapturingConfiguration.Settings = Context;
-            }, () => { IoC.Get<IMain>().GoHome(); }, async ex => { await ShowMessage("Opration failed", ex.Message); });
+            await ExecuteIntederminateProcess("Saving settings", "Sending settings to Stroller. Please wait...",
+                async token =>
+                {
+                    await _strollerSettingsService.SaveSettings(Context, token);
+                    CapturingConfiguration.Settings = Context;
+                }, async () => { await ShowMessage("Information", "Configuration successfully updated"); },
+                async ex => { await ShowMessage("Opration failed", ex.Message); });
         }
 
         public void LargeImageModeChecked()

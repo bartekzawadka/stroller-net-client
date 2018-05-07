@@ -136,6 +136,7 @@
     <Compile Include="Main\ISettings.cs" />
     <Compile Include="ViewModels\BrowseImagesViewModel.cs" />
     <Compile Include="ViewModels\CapturingViewModel.cs" />
+    <Compile Include="ViewModels\Common\MenuScreen.cs" />
     <Compile Include="ViewModels\Settings\CapturingSettingsViewModel.cs" />
     <Compile Include="ViewModels\Common\DetailsScreen.cs" />
     <Compile Include="ViewModels\Common\ListScreen.cs" />
